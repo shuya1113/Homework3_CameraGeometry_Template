@@ -26,7 +26,7 @@ def get_interest_points(image, feature_width):
     reference the documentation for each function/library and feel free to come to hours
     or post on Piazza with any questions
 
-        - skimage.feature.peak_local_max
+        - skimage.feature.peak_local_max (experiment with different min_distance values to get good results)
         - skimage.measure.regionprops
 
 
@@ -58,9 +58,6 @@ def get_features(image, x, y, feature_width):
     '''
     Returns a set of feature descriptors for a given set of interest points.
 
-    (Please note that we reccomend implementing this function after you have implemented
-    match_features)
-
     To start with, you might want to simply use normalized patches as your
     local feature. This is very simple to code and works OK. However, to get
     full credit you will need to implement the more effective SIFT-like descriptor
@@ -69,7 +66,7 @@ def get_features(image, x, y, feature_width):
 
     Your implementation does not need to exactly match the SIFT reference.
     Here are the key properties your (baseline) descriptor should have:
-    (1) a 4x4 grid of cells, each descriptor_window_image_width/4.
+    (1) a 4x4 grid of cells, each feature_width / 4 pixels square.
     (2) each cell should have a histogram of the local distribution of
         gradients in 8 orientations. Appending these histograms together will
         give you 4x4 x 8 = 128 dimensions.
@@ -172,5 +169,5 @@ def match_features(im1_features, im2_features):
     matches = np.zeros((1,2))
     confidences = np.zeros(1)
 
-    
+
     return matches, confidences

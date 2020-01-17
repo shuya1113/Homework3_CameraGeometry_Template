@@ -1,11 +1,11 @@
 
 from skimage.feature import plot_matches
 import matplotlib
-matplotlib.use("TkAgg")
+#matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-def show_correspondences(imgA, imgB, X1, Y1, X2, Y2, matches, mode='arrows', filename=None):
+def show_correspondences(imgA, imgB, X1, Y1, X2, Y2, matches, good_matches, number_to_display, filename=None):
 	'''
 		Visualizes corresponding points between two images, either as
 		arrows or dots
@@ -20,14 +20,16 @@ def show_correspondences(imgA, imgB, X1, Y1, X2, Y2, matches, mode='arrows', fil
 	# look at all three at once
 	fig, ax = plt.subplots(nrows=1, ncols=1)
 
-	if mode == 'dots':
-		print("dot visualization not implemented yet :(")
+	matches = matches[0:number_to_display, :]
+	good_matches = good_matches[0:number_to_display]
 
-	else:
-		kp1 = zip_x_y(Y1, X1)
-		kp2 = zip_x_y(Y2, X2)
-		matches = matches.astype(int)
-		plot_matches(ax, imgA, imgB, kp1, kp2, matches)
+
+	kp1 = zip_x_y(Y1, X1)
+	kp2 = zip_x_y(Y2, X2)
+	matches = matches.astype(int)
+	plot_matches(ax, imgA, imgB, kp1, kp2, matches[np.logical_not(good_matches)], matches_color='red')
+	plot_matches(ax, imgA, imgB, kp1, kp2, matches[good_matches], matches_color='green')
+
 
 	plt.show()
 
