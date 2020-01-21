@@ -27,8 +27,8 @@ def show_correspondences(imgA, imgB, X1, Y1, X2, Y2, matches, good_matches, numb
 	kp1 = zip_x_y(Y1, X1)
 	kp2 = zip_x_y(Y2, X2)
 	matches = matches.astype(int)
-	plot_matches(ax, imgA, imgB, kp1, kp2, matches[np.logical_not(good_matches)], matches_color='red')
-	plot_matches(ax, imgA, imgB, kp1, kp2, matches[good_matches], matches_color='green')
+	plot_matches(ax, imgA, imgB, kp1, kp2, matches[np.logical_not(good_matches)], matches_color='orangered')
+	plot_matches(ax, imgA, imgB, kp1, kp2, matches[good_matches], matches_color='springgreen')
 
 
 	plt.show()

@@ -102,16 +102,16 @@ def main():
     args = parser.parse_args()
 
     # (1) Load in the data
-    image1, image2, eval_file = load_data(args.pair)
+    image1_color, image2_color, eval_file = load_data(args.pair)
 
     # You don't have to work with grayscale images. Matching with color
     # information might be helpful. If you choose to work with RGB images, just
     # comment these two lines
 
-    image1 = rgb2gray(image1)
+    image1 = rgb2gray(image1_color)
     # Our own rgb2gray coefficients which match Rec.ITU-R BT.601-7 (NTSC) luminance conversion - only mino performance improvements and could be confusing to students
     # image1 = image1[:,:,0] * 0.2989 + image1[:,:,1] * 0.5870 + image1[:,:,2] * 0.1140
-    image2 = rgb2gray(image2)
+    image2 = rgb2gray(image2_color)
     # image2 = image2[:,:,0] * 0.2989 + image2[:,:,1] * 0.5870 + image2[:,:,2] * 0.1140
 
     # make images smaller to speed up the algorithm. This parameter
@@ -189,7 +189,7 @@ def main():
 
     num_pts_to_visualize = 50
 
-    evaluate_correspondence(image1, image2, eval_file, scale_factor,
+    evaluate_correspondence(image1_color, image2_color, eval_file, scale_factor,
         x1, y1, x2, y2, matches, confidences, num_pts_to_visualize)
 
     return

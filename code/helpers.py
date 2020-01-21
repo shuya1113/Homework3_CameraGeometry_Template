@@ -197,8 +197,9 @@ def evaluate_correspondence(img_A, img_B, ground_truth_correspondence_file,
 			top100 = correct_matches
 
 	print(f'Accuracy on all matches: {int(100 * correct_matches / len(matches))}%')
+
 	if vis > 0:
 		print("Vizualizing...")
-		visualize.show_correspondences(img_A, img_B, x1_est, y1_est, x2_est, y2_est, matches, good_matches, vis, filename)
+		visualize.show_correspondences(img_A, img_B, x1_est / scale_factor, y1_est / scale_factor, x2_est / scale_factor, y2_est / scale_factor, matches, good_matches, vis, filename)
 
 	return top50, top100, correct_matches
