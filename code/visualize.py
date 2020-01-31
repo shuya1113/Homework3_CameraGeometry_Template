@@ -4,6 +4,7 @@ import matplotlib
 #matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 def show_correspondences(imgA, imgB, X1, Y1, X2, Y2, matches, good_matches, number_to_display, filename=None):
 	'''
@@ -34,7 +35,9 @@ def show_correspondences(imgA, imgB, X1, Y1, X2, Y2, matches, good_matches, numb
 	plt.show()
 
 	if filename:
-		fig.savefig(filename)
+		if not os.path.isdir('../results'):
+			os.mkdir('../results')
+		fig.savefig('../results/' + filename)
 
 	return
 
