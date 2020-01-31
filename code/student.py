@@ -145,13 +145,6 @@ def match_features(im1_features, im2_features):
     represent this match as a the index of the feature in im1_features and the index
     of the feature in im2_features
 
-    Useful functions: A working solution does not require the use of all of these
-    functions, but depending on your implementation, you may find some useful. Please
-    reference the documentation for each function/library and feel free to come to hours
-    or post on Piazza with any questions
-
-        - zip (python built in function)
-
     :params:
     :im1_features: an np array of features returned from get_features() for interest points in image1
     :im2_features: an np array of features returned from get_features() for interest points in image2
