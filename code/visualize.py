@@ -30,11 +30,11 @@ def show_correspondences(imgA, imgB, X1, Y1, X2, Y2, matches, good_matches, numb
 	plot_matches(ax, imgA, imgB, kp1, kp2, matches[np.logical_not(good_matches)], matches_color='orangered')
 	plot_matches(ax, imgA, imgB, kp1, kp2, matches[good_matches], matches_color='springgreen')
 
-
+	fig = plt.gcf()
 	plt.show()
 
 	if filename:
-		plt.savefig(filename)
+		fig.savefig(filename)
 
 	return
 
