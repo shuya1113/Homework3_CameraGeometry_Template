@@ -71,6 +71,7 @@ class live_FFT2():
     def __init__(self, **kwargs):
 
         # Camera device
+        # If you have more than one camera, you can access them by cv2.VideoCapture(1), etc.
         self.vc = cv2.VideoCapture(0)
         if not self.vc.isOpened():
             print( "No camera found or error opening camera; using a static image instead." )
@@ -78,7 +79,7 @@ class live_FFT2():
 
         if self.use_camera == False:
             # No camera!
-            self.im = rgb2gray(img_as_float(io.imread('YuanningHuCrop.png')))
+            self.im = rgb2gray(img_as_float(io.imread('YuanningHuCrop.png'))) # One of our intrepid TAs (Yuanning was one of our HTAs for Spring 2019)
         else:
             # We found a camera!
             # Requested camera size. This will be cropped square later on, e.g., 240 x 240
@@ -89,7 +90,7 @@ class live_FFT2():
         cv2.namedWindow(self.wn, 0)
 
         # Load the Jack image for comparison
-        self.imJack = rgb2gray(img_as_float(io.imread('JacksonGibbonsCrop.png')))
+        self.imJack = rgb2gray(img_as_float(io.imread('JacksonGibbonsCrop.png'))) # Another one of our intrepid TAs (Jack was one of our TAs for Spring 2017)
 
         # Main loop
         while True:
@@ -128,10 +129,11 @@ class live_FFT2():
         height = self.im.shape[0]
         cv2.resizeWindow(self.wn, width*2, height*2)
 
+
         #                
         # Students: Concentrate here.
         # This code reads an image from your webcam. If you have no webcam, e.g.,
-        # a department machine, then it will use a picture of an intrepid HTA.
+        # a department machine, then it will use a picture of an intrepid TA.
         #
         # Output image visualization:
         # Top left: input image
@@ -146,18 +148,17 @@ class live_FFT2():
         amplitude = np.sqrt( np.power( imFFT.real, 2 ) + np.power( imFFT.imag, 2 ) )
         phase = np.arctan2( imFFT.imag, imFFT.real )
         
-        # We will reconstruct the image from this decomposition later on (far below); have a look now.
+        # We will reconstruct the image from this decomposition later on (far below at line 260); have a look now.
 
-        #########################################################
-        ## Part 0: Scanning the basis and looking at the reconstructed image
-        #
-        # # For this one, let's visually ignore the camera input.
-        # # Then, let's zero out the amplitude and phase.
-
+        # #########################################################
+        # # Part 0: Scanning the basis and looking at the reconstructed image for each frequency independently
+        # # To see the effect, uncomment this block, read throug the comments and code, and then execute the program.
+        
+        # # Let's begin by zeroing out the amplitude and phase.
         # amplitude = np.zeros( self.im.shape )
         # phase = np.zeros( self.im.shape )
 
-        # # Next, let's only set one basis sine wave to have any amplitude.
+        # # Next, let's only set one basis sine wave to have any amplitude - just like the 'white dot on black background' images in lecture
         # # Let's animate how it looks as we move radially through the frequency space
         # self.orientation += math.pi / 30.0
         # if self.orientation > math.pi * 2:
@@ -171,14 +172,16 @@ class live_FFT2():
         # xd = self.magnitude*math.cos(self.orientation)
         # yd = self.magnitude*math.sin(self.orientation)
         # a = np.fft.fftshift(amplitude)
+        # # This is where we set the pixel corresponding to the basis frequency to be 'lit'
         # a[int(cy+yd), int(cx+xd)] = self.im.shape[0]*self.im.shape[1] / 2.0
         # amplitude = np.fft.fftshift(a)
 
+        # # Note the reconstructed image (top right) as we light up different basis frequencies.
 
-        #########################################################
-        ## Part 1: Reconstructing from different numbers of basis frequencies
-        #
-        # # What if we set some amplitudes to zero, but vary
+        # ########################################################
+        # # Part 1: Reconstructing from different numbers of basis frequencies
+        
+        # # What if we set some frequency amplitudes to zero, but vary
         # # over time which ones we set?
 
         # # Make a circular mask over the amplitude image
@@ -201,9 +204,9 @@ class live_FFT2():
         # self.amplitudeCutoffRadius += self.amplitudeCutoffDirection
 
 
-        #########################################################
-        ## Part 2: Replacing amplitude / phase with that of another image
-        # 
+        # ########################################################
+        # # Part 2: Replacing amplitude / phase with that of another image
+        
         # imJack = cv2.resize( self.imJack, self.im.shape )
         # imJackFFT = np.fft.fft2( imJack )
         # amplitudeJack = np.sqrt( np.power( imJackFFT.real, 2 ) + np.power( imJackFFT.imag, 2 ) )
