@@ -6,7 +6,7 @@ from skimage.measure import regionprops
 
 def get_interest_points(image, feature_width):
     '''
-    Returns a set of interest points for the input image
+    Returns interest points for the input image
 
     (Please note that we recommend implementing this function last and using cheat_interest_points()
     to test your implementation of get_features() and match_features())
@@ -56,7 +56,7 @@ def get_interest_points(image, feature_width):
 
 def get_features(image, x, y, feature_width):
     '''
-    Returns a set of feature descriptors for a given set of interest points.
+    Returns feature descriptors for a given set of interest points.
 
     To start with, you might want to simply use normalized patches as your
     local feature. This is very simple to code and works OK. However, to get
