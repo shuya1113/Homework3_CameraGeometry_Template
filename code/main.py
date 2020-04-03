@@ -158,10 +158,16 @@ def main(args):
         matched_points_a = apply_matching_noise(Points_2D_pic_a,
                                                 args.matching_ratio)
 
-    print('Running through RANSAC')
-    [F_matrix, matched_points_a,
-     matched_points_b] = ransac_fundamental_matrix(Points_2D_pic_a,
-                                                   Points_2D_pic_b)
+    if args.no_ransac:
+        print('Not using RANSAC, estimation using estimate_fundamental_matrix')
+        F_matrix = estimate_fundamental_matrix(Points_2D_pic_a, Points_2D_pic_b)
+        matched_points_a = Points_2D_pic_a
+        matched_points_b = Points_2D_pic_b
+    else:
+        print('Running through RANSAC')
+        [F_matrix, matched_points_a,
+         matched_points_b] = ransac_fundamental_matrix(Points_2D_pic_a,
+                                                       Points_2D_pic_b)
 
     # Visualizing the F matrix using homography rectification
     H, _ = cv2.findHomography(matched_points_a, matched_points_b)
@@ -204,6 +210,9 @@ if __name__ == '__main__':
         help="Use the harder, unnormalized points, to be used after you have it \
                 working with normalized points (for parts 1 and 2)",
         action="store_true")
+    parser.add_argument("--no-ransac",
+                        help="Disable using ransac for part 3",
+                        action="store_true")
     parser.add_argument("--no-vis",
                         help="Disable visualization for parts 1 and 2",
                         action="store_true")
