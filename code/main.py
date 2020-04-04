@@ -8,11 +8,10 @@
 # (2) Calculates the projection matrix from those points    (you code this)
 # (3) Computes the camera center from the projection matrix (you code this)
 # (4) Estimates the fundamental matrix                      (you code this)
-# (5) Draws the epipolar lines on images
-# (6) Calls skimage's HOG matching function
-# (7) Estimates the fundamental matrix using RANSAC
-#     and filters away spurious matches                     (you code this)
-# (8) Draws the epipolar lines on images and corresponding matches
+# (5) Adds noise to the points if asked                     (you code this)
+# (6) Estimates the fundamental matrix using RANSAC         (you code this)
+#     and filters away spurious matches                                    
+# (7) Visualizes the F Matrix with homography rectification
 #
 # The relationship between coordinates in the world and coordinates in the
 # image defines the camera calibration. See Szeliski 6.2, 6.3 for reference.
