@@ -1,12 +1,10 @@
 # Projection Matrix Stencil Code
-# Written by Eleanor Tursman, based on previous work by Henry Hu, 
-# Grady Williams, and James Hays for CSCI 1430 @ Brown and 
+# Written by Eleanor Tursman, based on previous work by Henry Hu,
+# Grady Williams, and James Hays for CSCI 1430 @ Brown and
 # CS 4495/6476 @ Georgia Tech
 
 import numpy as np
-import matplotlib.pyplot as plt
-from skimage import io,color
-from mpl_toolkits.mplot3d import Axes3D
+from random import sample
 
 # Returns the projection matrix for a given set of corresponding 2D and
 # 3D points. 
@@ -80,6 +78,64 @@ def estimate_fundamental_matrix(Points_a,Points_b):
     F_matrix = np.array([[0,0,-.0004],[0,0,.0032],[0,-0.0044,.1034]])
 
     return F_matrix
+
+# Takes h, w to handle boundary conditions
+def apply_positional_noise(points, h, w, interval=3, ratio=0.2):
+    """ 
+    The goal of this function to randomly perturbe the percentage of points given 
+    by ratio. This can be done by using numpy functions. Essentially, the given 
+    ratio of points should have some number from [-interval, interval] added to
+    the point. Make sure to account for the points not going over the image 
+    boundary by using np.clip and the (h,w) of the image. 
+    
+    Key functions include but are not limited to:
+        - np.random.rand
+        - np.clip
+
+    Arugments:
+        points :: numpy array 
+            - shape: [num_points, 2] ( note that it is <x,y> )
+            - desc: points for the image in an array
+        h :: int 
+            - desc: height of the image - for clipping the points between 0, h
+        w :: int 
+            - desc: width of the image - for clipping the points between 0, h
+        interval :: int 
+            - desc: this should be the range from which you decide how much to
+            tweak each point. i.e if interval = 3, you should sample from [-3,3]
+        ratio :: float
+            - desc: tells you how many of the points should be tweaked in this
+            way. 0.2 means 20 percent of the points will have some number from 
+            [-interval, interval] added to the point. 
+    """
+    ##################
+    # Your code here #
+    ##################
+    return points
+
+# Apply noise to the matches. 
+def apply_matching_noise(points, ratio=0.2):
+    """ 
+    The goal of this function to randomly shuffle the percentage of points given 
+    by ratio. This can be done by using numpy functions. 
+    
+    Key functions include but are not limited to:
+        - np.random.rand
+        - np.random.shuffle  
+
+    Arugments:
+        points :: numpy array 
+            - shape: [num_points, 2] 
+            - desc: points for the image in an array
+        ratio :: float
+            - desc: tells you how many of the points should be tweaked in this
+            way. 0.2 means 20 percent of the points will be randomly shuffled.
+    """
+    ##################
+    # Your code here #
+    ##################
+    return points
+
 
 # Find the best fundamental matrix using RANSAC on potentially matching
 # points
