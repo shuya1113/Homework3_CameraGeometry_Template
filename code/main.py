@@ -129,11 +129,11 @@ def main(args):
         print("Error in argument passed for image: ", args.image)
         return
 
-    if args.positional_interval:
+    if args.positional_ratio:
         print('Applying noise on position')
         Points_2D_pic_a = apply_positional_noise(Points_2D_pic_a,
-                                                 pic_a.shape[0],
-                                                 pic_a.shape[1],
+                                                 pic_a.shape[0] * sf,
+                                                 pic_a.shape[1] * sf,
                                                  args.positional_interval,
                                                  args.positional_ratio)
         Points_2D_pic_b = apply_positional_noise(Points_2D_pic_b,
