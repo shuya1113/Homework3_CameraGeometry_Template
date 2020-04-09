@@ -154,7 +154,7 @@ def main(args):
 
     if args.matching_ratio:
         print('Applying noise on matches')
-        matched_points_a = apply_matching_noise(Points_2D_pic_a,
+        Points_2D_pic_a = apply_matching_noise(Points_2D_pic_a,
                                                 args.matching_ratio)
 
     if args.no_ransac:
