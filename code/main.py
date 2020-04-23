@@ -169,13 +169,13 @@ def main(args):
                                                        Points_2D_pic_b)
 
     # Visualizing the F matrix using homography rectification
-    H, _ = cv2.findHomography(matched_points_a, matched_points_b)
-    pic_a = cv2.warpPerspective(pic_a, H, (pic_b.shape[1], pic_b.shape[0]))
-    transformed_points_a = cv2.perspectiveTransform(
-        matched_points_a.reshape(-1, 1, 2), H).squeeze(axis=1)
-    showCorrespondence(pic_a, pic_b, transformed_points_a, matched_points_b)
-    # draw_epipolar_lines(F_matrix, pic_a, pic_b, transformed_points_a,
-    # matched_points_b)
+    if not args.no_vis:
+        H, _ = cv2.findHomography(matched_points_a, matched_points_b)
+        pic_a = cv2.warpPerspective(pic_a, H, (pic_b.shape[1], pic_b.shape[0]))
+        transformed_points_a = cv2.perspectiveTransform(
+            matched_points_a.reshape(-1, 1, 2), H).squeeze(axis=1)
+        showCorrespondence(pic_a, pic_b, transformed_points_a, matched_points_b)
+        # draw_epipolar_lines(F_matrix, pic_a, pic_b, transformed_points_a, matched_points_b)
 
 
 if __name__ == '__main__':
