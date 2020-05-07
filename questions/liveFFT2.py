@@ -72,7 +72,7 @@ class live_FFT2():
 
         # Camera device
         # If you have more than one camera, you can access them by cv2.VideoCapture(1), etc.
-        self.vc = cv2.VideoCapture(0)
+        self.vc = cv2.VideoCapture(1)
         if not self.vc.isOpened():
             print( "No camera found or error opening camera; using a static image instead." )
             self.use_camera = False
@@ -150,7 +150,18 @@ class live_FFT2():
         
         # We will reconstruct the image from this decomposition later on (far below at line 260); have a look now.
 
-        # #########################################################
+        ###########################################################
+        # # Just the central dot
+        #amplitude = np.zeros( self.im.shape )
+        # # a = np.fft.fftshift(amplitude)
+        
+        # # NOTE: [0,0] here is the 0-th frequency component around which all other frequencies oscillate
+        #amplitude[0,0] = 40000
+        
+        # # amplitude = np.fft.fftshift(a)
+
+
+        # # #########################################################
         # # Part 0: Scanning the basis and looking at the reconstructed image for each frequency independently
         # # To see the effect, uncomment this block, read throug the comments and code, and then execute the program.
         
@@ -178,30 +189,30 @@ class live_FFT2():
 
         # # Note the reconstructed image (top right) as we light up different basis frequencies.
 
-        # ########################################################
-        # # Part 1: Reconstructing from different numbers of basis frequencies
+        ########################################################
+        # Part 1: Reconstructing from different numbers of basis frequencies
         
-        # # What if we set some frequency amplitudes to zero, but vary
-        # # over time which ones we set?
+        # What if we set some frequency amplitudes to zero, but vary
+        # over time which ones we set?
 
-        # # Make a circular mask over the amplitude image
-        # Y, X = np.ogrid[:height, :width]
-        # dist_from_center = np.sqrt((X-(width/2))**2 + (Y-(height/2))**2)
-        # # Suppress amplitudes less than cutoff radius
-        # mask = dist_from_center >= self.amplitudeCutoffRadius
-        # a = np.fft.fftshift(amplitude)
-        # a[mask] = 0
-        # amplitude = np.fft.fftshift(a)
+        # Make a circular mask over the amplitude image
+        Y, X = np.ogrid[:height, :width]
+        dist_from_center = np.sqrt((X-(width/2))**2 + (Y-(height/2))**2)
+        # Suppress amplitudes less than cutoff radius
+        mask = dist_from_center >= self.amplitudeCutoffRadius
+        a = np.fft.fftshift(amplitude)
+        a[mask] = 0
+        amplitude = np.fft.fftshift(a)
 
-        # # Slowly undulate the cutoff radius back and forth
-        # # If radius is small and direction is decreasing, then flip the direction!
-        # if self.amplitudeCutoffRadius <= 1 and self.amplitudeCutoffDirection < 0:
-        #     self.amplitudeCutoffDirection *= -1
-        # # If radius is large and direction is increasing, then flip the direction!
-        # if self.amplitudeCutoffRadius > width/3 and self.amplitudeCutoffDirection > 0:
-        #     self.amplitudeCutoffDirection *= -1
+        # Slowly undulate the cutoff radius back and forth
+        # If radius is small and direction is decreasing, then flip the direction!
+        if self.amplitudeCutoffRadius <= 1 and self.amplitudeCutoffDirection < 0:
+            self.amplitudeCutoffDirection *= -1
+        # If radius is large and direction is increasing, then flip the direction!
+        if self.amplitudeCutoffRadius > width/3 and self.amplitudeCutoffDirection > 0:
+            self.amplitudeCutoffDirection *= -1
         
-        # self.amplitudeCutoffRadius += self.amplitudeCutoffDirection
+        self.amplitudeCutoffRadius += self.amplitudeCutoffDirection
 
 
         # ########################################################
@@ -237,18 +248,18 @@ class live_FFT2():
         # Play with the images. What can you discover?
         
         # Zero out phase?
-        #phase = np.zeros( self.im.shape )
+        # phase = np.zeros( self.im.shape ) # + 0.5 * phase
 
         # Flip direction?
-        #phase = -phase
+        # phase = -phase
 
-        ## Rotate phase values?
-        #self.phaseOffset += 0.05
-        #phase = np.arctan2( imFFT.imag, imFFT.real ) + self.phaseOffset
-        ## Always place within -pi to pi
-        #phase += np.pi
-        #phase %= 2*np.pi
-        #phase -= np.pi
+        # # Rotate phase values?
+        # self.phaseOffset += 0.05
+        # phase = np.arctan2( imFFT.imag, imFFT.real ) + self.phaseOffset
+        # # Always place within -pi to pi
+        # phase += np.pi
+        # phase %= 2*np.pi
+        # phase -= np.pi
 
         # Rotate whole image? Together? Individually?
         #phase = np.rot90( phase )
