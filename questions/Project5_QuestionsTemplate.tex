@@ -44,6 +44,7 @@
 \usepackage[a4paper,margin=1.5in]{geometry}
 \usepackage{stackengine,graphicx}
 \usepackage{fancyhdr}
+\usepackage{amsmath}
 \usepackage{enumerate}
 \setlength{\headheight}{15pt}
 \usepackage{microtype}
@@ -196,7 +197,74 @@ For each scenario:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
-\paragraph{Q5:} 
+\paragraph{Q5 (Linear algebra/numpy question):}
+Suppose we have a quadrilateral $ABCD$ and a transformed version $A'B'C'D'$ as seen in the image below.
+
+\includegraphics[width=8cm]{quadrilaterals.jpg}
+
+\begin{equation}
+\begin{split}
+A&=(1, 1)\\
+B&=(1.5, 0.5)\\
+C&=(2, 1)\\
+D&=(2.5, 2)
+\end{split}
+\quad\quad\quad
+\begin{split}
+A'&=(-0.3, 1.3)\\
+B'&=(0.5, 1.1)\\
+C'&=(-0.3, 1.8)\\
+D'&=(-0.3, 2.6)
+\end{split}
+\end{equation}
+
+Let's assume that each point in $ABCD$ was approximately mapped to its corresponding point in $A'B'C'D'$ by a $2\times2$ transformation matrix $M$.
+
+e.g. if $A = \begin{pmatrix} x \\ y \end{pmatrix}$ and $A' = \begin{pmatrix} x' \\ y' \end{pmatrix}$, and $\boldsymbol{M} = \begin{pmatrix} m_{1,1} & m_{1,2} \\ m_{2,1} & m_{2,2} \end{pmatrix}$ 
+
+then $\begin{pmatrix} m_{1,1} & m_{1,2} \\ m_{2,1} & m_{2,2} \end{pmatrix} * \begin{pmatrix} x \\ y \end{pmatrix} \approx \begin{pmatrix} x' \\ y' \end{pmatrix}$
+
+We would like to approximate $\boldsymbol{M}$ using least squares for linear regression.
+
+\begin{enumerate}[(a)]
+\item Rewrite the equation $\boldsymbol{M}x \approx x'$ into a pair of linear equations in the form
+\begin{align}
+    \_\_m_{1,1} + \_\_m_{1,2} + \_\_m_{2,1} + \_\_m_{2,2} = \_\_
+\end{align}
+where the blanks are known coefficients or 0 (remember we know $x$, $y$, $x'$, and $y'$)
+\item Use the equations you wrote for part (a) and coordinate values for $ABCD$ and $A'B'C'D'$ to construct a matrix $\boldsymbol{Q}$ and column vector $b$ that satisfy
+\begin{align}
+    \boldsymbol{Q}*\begin{pmatrix} m_{1,1} \\ m_{1,2} \\ m_{2,1} \\ m_{2,2} \\ \end{pmatrix} = b
+\end{align}
+\emph{Hint:} you should have a pair of equations for each $x$-$x'$ correspondence, giving you $8$ rows in $\boldsymbol{Q}$ and $b$.
+
+\emph{Note:} Systems of linear equations are typically written in the form $\boldsymbol{A}x=b$, but since we have already defined $A$ and $x$, we're writing it as $\boldsymbol{Q}m=b$
+
+\item Our problem is now over-constrained, so we want to find values for $m_{i,j}$ that minimize the squared error between approximated values and real values, or $||\boldsymbol{Q}m-b||_2$. To do this we use singular value decomposition to find the pseudoinverse of $\boldsymbol{Q}$, written as $\boldsymbol{Q}^\dagger$. We then multiply it by both sides, giving us $\boldsymbol{Q}^\dagger \boldsymbol{Q}m = \boldsymbol{Q}^\dagger b \quad\Rightarrow\quad m \approx \boldsymbol{Q}^\dagger b$.
+
+Thankfully, the computer can do all of this for us! \texttt{numpy.linalg.lstsq()} takes in our $\boldsymbol{Q}$ matrix and $b$ vector, and returns approximations for $m$. Plug the values you wrote in part (b) into that function and write the returned $\boldsymbol{M}$ matrix here.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{A5:} Your answer here.
+% Uncomment the stencil below and fill in your solution.
+
+% \begin{enumerate}[(a)]
+
+% \item 
+
+% \item 
+
+% \item 
+
+% \item 
+
+% \end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagebreak
+\paragraph{Q6:} 
 In searching for solutions to slow the spread of COVID-19, many governments and organizations have looked to technology, some of which uses cameras and computer vision. Please read these articles on
 \href{https://thenextweb.com/neural/2020/03/21/why-ai-might-be-the-most-effective-weapon-we-have-to-fight-covid-19/}{AI usage during the pandemic} and a \href{https://www.bbc.com/news/technology-51439401}{‘close contact detector’}, and answer the following questions. 
 \begin{enumerate}[(a)]
@@ -221,7 +289,7 @@ The surveillance and biometric measures that help us today may outlast the pande
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{A5:} Your answer here.
+\paragraph{A6:} Your answer here.
 % Uncomment the stencil below and fill in your solution.
 
 % \begin{enumerate}[(a)]
@@ -239,7 +307,7 @@ The surveillance and biometric measures that help us today may outlast the pande
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Please leave the pagebreak
 \pagebreak
-\paragraph{A5 (continued):} Your answer here.
+\paragraph{A6 (continued):} Your answer here.
 
 % If you really need extra space, uncomment here and use extra pages after the last question.
 % Please refer here in your original answer. Thanks!
