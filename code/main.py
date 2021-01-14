@@ -88,21 +88,22 @@ def main():
     """
     Reads in the data,
 
-    Command line usage: python main.py -p | --pair <image pair name>
+    Command line usage: python main.py -p | --data <image pair name>
 
-    -p | --pair - flag - required. specifies which image pair to match
+    -d | --data - flag - required. specifies which image pair to match
 
     """
 
     # create the command line parser
     parser = argparse.ArgumentParser()
-
-    parser.add_argument("-p", "--pair", required=True, help="Either notre_dame, mt_rushmore, or e_gaudi. Specifies which image pair to match")
-
+    parser.add_argument("-d", "--data",
+                        required=True,
+                        choices=["notre_dame","mt_rushmore","e_gaudi"],
+                        help="Either notre_dame, mt_rushmore, or e_gaudi. Specifies which image pair to match")
     args = parser.parse_args()
 
     # (1) Load in the data
-    image1_color, image2_color, eval_file = load_data(args.pair)
+    image1_color, image2_color, eval_file = load_data(args.data)
 
     # You don't have to work with grayscale images. Matching with color
     # information might be helpful. If you choose to work with RGB images, just
@@ -190,7 +191,7 @@ def main():
     num_pts_to_visualize = 50
 
     evaluate_correspondence(image1_color, image2_color, eval_file, scale_factor,
-        x1, y1, x2, y2, matches, confidences, num_pts_to_visualize, args.pair + '_matches.jpg')
+        x1, y1, x2, y2, matches, confidences, num_pts_to_visualize, args.data + '_matches.jpg')
 
     return
 
