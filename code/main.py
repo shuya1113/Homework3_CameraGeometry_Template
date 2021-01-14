@@ -48,7 +48,7 @@ def load_data(file_name):
      If you want to add new images to test, create a new elif of the same format as those
      for notre_dame, mt_rushmore, etc. You do not need to set the eval_file variable unless
      you hand create a ground truth annotations. To run with your new images use
-     python main.py -p <your file name>.
+     python main.py -d <your file name>.
 
     :param file_name: string for which image pair to compute correspondence for
 
@@ -88,7 +88,7 @@ def main():
     """
     Reads in the data,
 
-    Command line usage: python main.py -p | --data <image pair name>
+    Command line usage: python main.py -d | --data <image pair name>
 
     -d | --data - flag - required. specifies which image pair to match
 
