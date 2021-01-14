@@ -48,6 +48,16 @@ def get_interest_points(image, feature_width):
     # TODO: Your implementation here! See block comments and the project webpage for instructions
 
     # These are placeholders - replace with the coordinates of your interest points!
+    
+    # STEP 1: Calculate the gradient (partial derivatives on two directions).
+    # STEP 2: Apply Gaussian filter with appropriate sigma.
+    # STEP 3: Calculate Harris cornerness score for all pixels.
+    # STEP 4: Peak local max to eliminate clusters. (Try different parameters.)
+    
+    # BONUS: There are some ways to improve:
+    # 1. Making feature detection multi-scaled.
+    # 2. Use adaptive non-maximum suppression.
+    
     xs = np.zeros(1)
     ys = np.zeros(1)
 
@@ -117,6 +127,20 @@ def get_features(image, x, y, feature_width):
     '''
 
     # TODO: Your implementation here! See block comments and the project webpage for instructions
+    
+    # STEP 1: Calculate the gradient (partial derivatives on two directions) on all pixels.
+    # STEP 2: Decompose the graident vectors to magnitude and direction.
+    # STEP 3: For each feature point, calculate the local histogram based on related 4x4 grid cells.
+    #         Each cell is a square with feature_width / 4 pixels length of side.
+    #         For each cell, we assign these gradient vectors corresponding to these pixels to 8 bins
+    #         based on the direction (angle) of the gradient vectors. 
+    # STEP 4: Now for each cell, we have a 8-dimensional vector. Appending the vectors in the 4x4 cells,
+    #         we have a 128-dimensional descriptor.
+    # STEP 5: Don't forget to normalize your descriptor.
+    
+    # BONUS: There are some ways to improve:
+    # 1. Use multi-scaled descriptor.
+    # 2. Borrow ideas from GLOH or other type of descriptors.
 
     # This is a placeholder - replace this with your features!
     features = np.zeros((1,128))
@@ -158,6 +182,12 @@ def match_features(im1_features, im2_features):
     # TODO: Your implementation here! See block comments and the project webpage for instructions
 
     # These are placeholders - replace with your matches and confidences!
+    
+    # STEP 1: Calculate the distances between each pairs of features between im1_features and im2_features.
+    #         HINT: https://docs.google.com/document/d/1SlzMaiS4rq6M8ySDXZTgUH_tyVV2rBQQzb_c1PQZfKI/edit
+    # STEP 2: Sort and find closest features for each feature, then performs NNDR test.
+    
+    # BONUS: Using PCA might help the speed (but maybe not the accuracy).
 
     matches = np.zeros((1,2))
     confidences = np.zeros(1)
