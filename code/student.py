@@ -34,6 +34,12 @@ def calculate_projection_matrix(Points_2D, Points_3D):
     # not make this assumption and set up your matrices by following the 
     # set of equations on the project page. 
     #
+    
+    markers = get_markers()
+
+    dictionary = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_1000)
+    parameters =  cv2.aruco.DetectorParameters_create()
+    
     ##################
     # Your code here #
     ##################
