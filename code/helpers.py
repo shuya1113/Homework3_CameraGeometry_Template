@@ -1,166 +1,45 @@
-# Projection Matrix Stencil Code
-# Written by Eleanor Tursman, based on previous work by Henry Hu,
-# Grady Williams, and James Hays for CSCI 1430 @ Brown and
-# CS 4495/6476 @ Georgia Tech
-
-import numpy as np
-from scipy import io
-from skimage import img_as_float32
-import random
-import os
 import cv2
+import numpy as np
+from skimage import img_as_float32
 import matplotlib.pyplot as plt
-from matplotlib.patches import ConnectionPatch
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib; matplotlib.use('TkAgg')
-
-ORB_NUM_POINTS = 3000
-
-# Visualize the actual 2D points and the projected 2D points calculated
-# from the projection matrix
-# You do not need to modify anything in this function, although you can if
-# you want to.
-def evaluate_points(M, Points_2D, Points_3D):
-
-    reshaped_points = np.concatenate(
-        (Points_3D, np.ones((Points_3D.shape[0], 1))), axis=1)
-    Projection = np.matmul(M, np.transpose(reshaped_points))
-    Projection = np.transpose(Projection)
-    u = np.divide(Projection[:, 0], Projection[:, 2])
-    v = np.divide(Projection[:, 1], Projection[:, 2])
-    Residual = np.sum(
-        np.power(
-            np.power(u - Points_2D[:, 0], 2) +
-            np.power(v - Points_2D[:, 1], 2), 0.5))
-    Projected_2D_Pts = np.transpose(np.vstack([u, v]))
-
-    return Projected_2D_Pts, Residual
+import plotly.graph_objects as go
+import random
 
 
-# Visualize the actual 2D points and the projected 2D points calculated
-# from the projection matrix
-# You do not need to modify anything in this function, although you can if
-# you want to.
-def visualize_points(Actual_Pts, Project_Pts):
-    plt.scatter(Actual_Pts[:, 0], Actual_Pts[:, 1], marker='o')
-    plt.scatter(Project_Pts[:, 0], Project_Pts[:, 1], marker='x')
-    plt.legend(('Actual Points', 'Projected Points'))
-    plt.show()
+def get_markers(markers_path):
+    """
+    Returns a dictionary mapping a marker ID to a 4x3 array
+    containing the 3d points for each of the 4 corners of the
+    marker in our scanning setup
+    """
+    markers = {}
+    with open(markers_path) as f:
+        first_dim = 0
+        second_dim = 0
+        for i, line in enumerate(f.readlines()):
+            if i == 0:
+                first_dim, second_dim = [float(x) for x in line.split()]
+            else:
+                info = [float(x) for x in line.split()]
+                markers[i] = [
+                    [info[0], info[1], info[2]],
+                    [info[0] + first_dim * info[3], info[1] + first_dim * info[4], info[2] + first_dim * info[5]],
+                    [info[0] + first_dim * info[3] + second_dim * info[6], info[1] + first_dim * info[4] + second_dim * info[7], info[2] + first_dim * info[5] + second_dim * info[8]],
+                    [info[0] + second_dim * info[6], info[1] + second_dim * info[7], info[2] + second_dim * info[8]],
+                ]
+    return markers
 
 
-# Visualize the actual 3D points and the estimated 3D camera center.
-# You do not need to modify anything in this function, although you can if
-# you want to.
-def plot3dview(Points_3D, camera_center1):
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(Points_3D[:, 0],
-               Points_3D[:, 1],
-               Points_3D[:, 2],
-               c='b',
-               marker='o')
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
-    ax.elev = 31
-    ax.azim = -129
-
-    # draw vertical lines connecting each point to Z=0
-    min_z = np.min(Points_3D[:, 2])
-    for i in range(0, Points_3D.shape[0]):
-        ax.plot(np.array([Points_3D[i, 0], Points_3D[i, 0]]),
-                np.array([Points_3D[i, 1], Points_3D[i, 1]]),
-                np.array([Points_3D[i, 2], min_z]))
-
-    # if camera_center1 exists, plot it
-    if 'camera_center1' in locals():
-        ax.scatter(camera_center1[0],
-                   camera_center1[1],
-                   camera_center1[2],
-                   s=100,
-                   c='r',
-                   marker='x')
-        ax.plot(np.array([camera_center1[0], camera_center1[0]]),
-                np.array([camera_center1[1], camera_center1[1]]),
-                np.array([camera_center1[2], min_z]),
-                c='r')
-
-    plt.show()
-
-
-# Draw the epipolar lines given the fundamental matrix, left right images
-# and left right datapoints
-# You do not need to modify anything in this function, although you can if
-# you want to.
-def draw_epipolar_lines(F_matrix, ImgLeft, ImgRight, PtsLeft, PtsRight):
-
-    Pul = np.array([1, 1, 1])
-    Pbl = np.array([1, ImgLeft.shape[0], 1])
-    Pur = np.array([ImgLeft.shape[1], 1, 1])
-    Pbr = np.array([ImgLeft.shape[1], ImgLeft.shape[0], 1])
-
-    lL = np.cross(Pul, Pbl)
-    lR = np.cross(Pur, Pbr)
-
-    plt.figure(1)
-    plt.imshow(ImgRight)
-    plt.axis('off')
-    lLim, rLim = plt.ylim()
-    for i in range(0, PtsLeft.shape[0]):
-        e = np.matmul(F_matrix, np.transpose(np.hstack([PtsLeft[i, :], 1])))
-        PL = np.cross(e, lL)
-        PR = np.cross(e, lR)
-        x = np.array([PL[0] / PL[2], PR[0] / PR[2]])
-        y = np.array([PL[1] / PL[2], PR[1] / PR[2]])
-        plt.plot(x, y, c='b', linewidth=0.5)
-
-    plt.scatter(PtsRight[:, 0], PtsRight[:, 1], c='r', marker='o', s=10)
-    plt.ylim(lLim, rLim)
-
-    plt.figure(2)
-    plt.imshow(ImgLeft)
-    plt.axis('off')
-    lLim, rLim = plt.ylim()
-    for i in range(0, PtsRight.shape[0]):
-        e = np.matmul(np.transpose(F_matrix),
-                      np.transpose(np.hstack([PtsRight[i, :], 1])))
-        PL = np.cross(e, lL)
-        PR = np.cross(e, lR)
-        x = np.array([PL[0] / PL[2], PR[0] / PR[2]])
-        y = np.array([PL[1] / PL[2], PR[1] / PR[2]])
-        plt.plot(x, y, c='b', linewidth=0.5)
-
-    plt.scatter(PtsLeft[:, 0], PtsLeft[:, 1], c='r', marker='o', s=10)
-    plt.ylim(lLim, rLim)
-    plt.show()
-
-# Gives you the ground truth for the interest points to test your ransac
-def get_ground_truth(eval_file, scale_factor_A=1, scale_factor_B=1):
-    file_contents = io.loadmat(eval_file)
-
-    xa = file_contents['x1'] * scale_factor_A
-    ya = file_contents['y1'] * scale_factor_A
-    xb = file_contents['x2'] * scale_factor_B
-    yb = file_contents['y2'] * scale_factor_B
-    matches_A = np.concatenate((xa, ya), axis=1)
-    matches_B = np.concatenate((xb, yb), axis=1)
-    return matches_A, matches_B
-
-
-
-# This is a wrapper for opencv's ORB function. It removes duplicate
-# points which would otherwise cause problems for RANSAC (because you would
-# be likely to sample duplicate points and therefore your linear system
-# would not have enough independent rows). This function also visualizes
-# corresponding points between two images. Corresponding points will be matched
-# by a line of random color. You do not need to modify anything in this
-# function, although you can if you want to.
-def matchAndShowCorrespondence(imgA, imgB):
-
+def get_matches(image1, image2, num_keypoints=5000):
+    """
+    # Wraps OpenCV's ORB function and feature matcher
+    # returns two N x 2 numpy arrays, 2d points in image1 and image2
+    # that are proposed matches
+    """
     # find the keypoints and descriptors with ORB
-    orb = cv2.ORB_create(nfeatures=ORB_NUM_POINTS)
-    kp1, des1 = orb.detectAndCompute(imgA, None)
-    kp2, des2 = orb.detectAndCompute(imgB, None)
+    orb = cv2.ORB_create(nfeatures=num_keypoints)
+    kp1, des1 = orb.detectAndCompute(image1, None)
+    kp2, des2 = orb.detectAndCompute(image2, None)
 
     # Match descriptors
     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
@@ -169,9 +48,6 @@ def matchAndShowCorrespondence(imgA, imgB):
     # Sort them in the order of their distance.
     matches = sorted(matches, key=lambda x: x.distance)
 
-    # Draw all matches.
-    img3 = cv2.drawMatches(imgA, kp1, imgB, kp2, matches, None, flags=2)
-
     # Extract matched keypoints
     list_kp1 = [kp1[mat.queryIdx].pt for mat in matches]
     list_kp2 = [kp2[mat.trainIdx].pt for mat in matches]
@@ -179,57 +55,100 @@ def matchAndShowCorrespondence(imgA, imgB):
     matches_kp2 = np.asarray(list_kp2)
 
     # Remove duplicate matches
-    CombineReduce = np.unique(np.concatenate((matches_kp1, matches_kp2),
+    combine_reduce = np.unique(np.concatenate((matches_kp1, matches_kp2),
                                              axis=1),
                               axis=0)
-    matches_kp1 = CombineReduce[:, 0:2]
-    matches_kp2 = CombineReduce[:, -2:]
+    points1 = combine_reduce[:, 0:2]
+    points2 = combine_reduce[:, -2:]
 
-    # Display results
-    fig = plt.figure()
-    plt.imshow(img3)
-    plt.axis('off')
-    plt.show()
-
-    print('Saving visualization to vis_arrows.jpg\n')
-    fig.savefig(os.path.dirname(__file__) + '/vis_arrows.png',
-                bbox_inches='tight',
-                dpi=300)
-
-    return matches_kp1, matches_kp2
+    return points1, points2
 
 
-# Display correspondences given a set of matches. You don't need to change this.
-def showCorrespondence(imgA, imgB, matches_kp1, matches_kp2):
-
-    imgA = img_as_float32(imgA)
-    imgB = img_as_float32(imgB)
+def show_matches(image1, image2, points1, points2):
+    """
+    Shows matches from image1 to image2, represented by Nx2 arrays
+    points1 and points2
+    """
+    image1 = img_as_float32(image1)
+    image2 = img_as_float32(image2)
 
     fig = plt.figure()
     plt.axis('off')
 
-    Height = max(imgA.shape[0], imgB.shape[0])
-    Width = imgA.shape[1] + imgB.shape[1]
-    numColors = imgA.shape[2]
+    matches_image = np.hstack([image1, image2])
+    plt.imshow(matches_image)
 
-    newImg = np.zeros([Height, Width, numColors])
-    newImg[0:imgA.shape[0], 0:imgA.shape[1], :] = imgA
-    newImg[0:imgB.shape[0], -imgB.shape[1]:, :] = imgB
-    plt.imshow(newImg)
+    shift = image1.shape[1]
+    for i in range(0, points1.shape[0]):
 
-    shift = imgA.shape[1]
-    for i in range(0, matches_kp1.shape[0]):
+        random_color = lambda: random.randint(0, 255)
+        cur_color = ('#%02X%02X%02X' % (random_color(), random_color(), random_color()))
 
-        r = lambda: random.randint(0, 255)
-        cur_color = ('#%02X%02X%02X' % (r(), r(), r()))
-
-        x1 = matches_kp1[i, 1]
-        y1 = matches_kp1[i, 0]
-        x2 = matches_kp2[i, 1]
-        y2 = matches_kp2[i, 0]
+        x1 = points1[i, 1]
+        y1 = points1[i, 0]
+        x2 = points2[i, 1]
+        y2 = points2[i, 0]
 
         x = np.array([x1, x2])
         y = np.array([y1, y2 + shift])
         plt.plot(y, x, c=cur_color, linewidth=0.5)
 
     plt.show()
+
+
+def reproject_points(M, points):
+    """
+    Use projection matrix to project Nx3 array of 3d points into Nx2
+    array of image points
+    """
+
+    reshaped_points = np.concatenate(
+        (points, np.ones((points.shape[0], 1))), axis=1)
+    projected_points = np.matmul(M, np.transpose(reshaped_points))
+    projected_points = np.transpose(projected_points)
+    u = np.divide(projected_points[:, 0], projected_points[:, 2])
+    v = np.divide(projected_points[:, 1], projected_points[:, 2])
+    projected_points = np.transpose(np.vstack([u, v]))
+
+    return projected_points
+
+
+def show_reprojections(images, Ms, markers):
+    """
+    Show reprojected markers in each image
+    """
+    points3d = []
+
+    for marker_id in markers:
+        points3d += markers[marker_id]
+    points3d = np.array(points3d)
+
+    fig, axs = plt.subplots(1, len(images), figsize=(15, 6))
+    plt.axis('off')
+
+    for i in range(len(images)):
+        points2d = reproject_points(Ms[i], points3d)
+        axs[i].imshow(images[i])
+        axs[i].scatter(points2d[:, 0], points2d[:, 1])
+    plt.show()
+
+
+def show_point_cloud(points3d, colors):
+    """
+    Show 3D points with their corresponding colors
+    """
+    fig = go.Figure(data=[go.Scatter3d(
+        x=points3d[:, 0],
+        y=points3d[:, 1],
+        z=points3d[:, 2],
+        mode='markers',
+        marker=dict(
+            size=2,
+            color=colors,
+            opacity=1
+        )
+    )])
+
+    # tight layout
+    fig.update_layout(margin=dict(l=0, r=0, b=0, t=0))
+    fig.show()

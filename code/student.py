@@ -1,57 +1,53 @@
-# Projection Matrix Stencil Code
-# Written by Eleanor Tursman, based on previous work by Henry Hu,
-# Grady Williams, and James Hays for CSCI 1430 @ Brown and
-# CS 4495/6476 @ Georgia Tech
-
 import numpy as np
+import cv2
 from random import sample
 
-# Returns the projection matrix for a given set of corresponding 2D and
-# 3D points. 
-# 'Points_2D' is nx2 matrix of 2D coordinate of points on the image
-# 'Points_3D' is nx3 matrix of 3D coordinate of points in the world
-# 'M' is the 3x4 projection matrix
-def calculate_projection_matrix(Points_2D, Points_3D):
-    # To solve for the projection matrix. You need to set up a system of
-    # equations using the corresponding 2D and 3D points:
-    #
-    #                                                     [M11       [ u1
-    #                                                      M12         v1
-    #                                                      M13         .
-    #                                                      M14         .
-    #[ X1 Y1 Z1 1 0  0  0  0 -u1*X1 -u1*Y1 -u1*Z1          M21         .
-    #  0  0  0  0 X1 Y1 Z1 1 -v1*X1 -v1*Y1 -v1*Z1          M22         .
-    #  .  .  .  . .  .  .  .    .     .      .          *  M23   =     .
-    #  Xn Yn Zn 1 0  0  0  0 -un*Xn -un*Yn -un*Zn          M24         .
-    #  0  0  0  0 Xn Yn Zn 1 -vn*Xn -vn*Yn -vn*Zn ]        M31         .
-    #                                                      M32         un
-    #                                                      M33         vn ]
-    #
-    # Then you can solve this using least squares with the 'np.linalg.lstsq' operator.
-    # Notice you obtain 2 equations for each corresponding 2D and 3D point
-    # pair. To solve this, you need at least 6 point pairs. Note that we set
-    # M34 = 1 in this scenario. If you instead choose to use SVD via np.linalg.svd, you should
-    # not make this assumption and set up your matrices by following the 
-    # set of equations on the project page. 
-    #
-    
+
+def calculate_projection_matrix(image, markers):
+    """
+    To solve for the projection matrix. You need to set up a system of
+    equations using the corresponding 2D and 3D points. See the handout, Q5
+    of the written questions, or the lecture slides for how to set up these
+    equations.
+
+    Don't forget to set M_34 = 1 in this system to fix the scale.
+
+    :param image: a single image in our camera system
+    :param markers: dictionary of markerID to 4x3 array containing 3D points
+    :return: M, the camera projection matrix which maps 3D world coordinates
+    of provided aruco markers to image coordinates
+    """
     ######################
     # Do not change this #
     ######################
-    
-    markers = get_markers()
 
+    # Markers is a dictionary mapping a marker ID to a 4x3 array
+    # containing the 3d points for each of the 4 corners of the
+    # marker in our scanning setup
     dictionary = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_1000)
-    parameters =  cv2.aruco.DetectorParameters_create()
-    
-    markerCorners, markerIds, rejectedCandidates = cv2.aruco.detectMarkers(image, dictionary, parameters=parameters)
-    
-    ##################
-    # Your code here #
-    ##################
+    parameters = cv2.aruco.DetectorParameters_create()
 
+    markerCorners, markerIds, rejectedCandidates = cv2.aruco.detectMarkers(
+        image, dictionary, parameters=parameters)
+    markerIds = [m[0] for m in markerIds]
+    markerCorners = [m[0] for m in markerCorners]
+
+    points2d = []
+    points3d = []
+
+    for markerId, marker in zip(markerIds, markerCorners):
+        if markerId in markers:
+            for j, corner in enumerate(marker):
+                points2d.append(corner)
+                points3d.append(markers[markerId][j])
+
+    points2d = np.array(points2d)
+    points3d = np.array(points3d)
+
+    ########################
+    # TODO: Your code here #
+    ########################
     # This M matrix came from a call to rand(3,4). It leads to a high residual.
-    # Your total residual should be less than 1.
     print('Randomly setting matrix entries as a placeholder')
     M = np.array([[0.1768, 0.7018, 0.7948, 0.4613],
                   [0.6750, 0.3152, 0.1136, 0.0480],
@@ -59,122 +55,118 @@ def calculate_projection_matrix(Points_2D, Points_3D):
 
     return M
 
-# Returns the camera center matrix for a given projection matrix
-# 'M' is the 3x4 projection matrix
-# 'Center' is the 1x3 matrix of camera center location in world coordinates
-def compute_camera_center(M):
-    ##################
-    # Your code here #
-    ##################
 
-    # Replace this with the correct code
-    # In the visualization you will see that this camera location is clearly
-    # incorrect, placing it in the center of the room where it would not see all
-    # of the points.
-    Center = np.array([1,1,1]) 
+def normalize_coordinates(Points):
+    """
+    Normalize the given Points before computing the fundamental matrix. You
+    should perform the normalization to make the mean of the points 0
+    and the average magnitude 1.0.
 
-    return Center
+    The transformation matrix T is the product of the scale and offset matrices
 
-# Returns the camera center matrix for a given projection matrix
-# 'Points_a' is nx2 matrix of 2D coordinate of points on Image A
-# 'Points_b' is nx2 matrix of 2D coordinate of points on Image B
-# 'F_matrix' is 3x3 fundamental matrix
-def estimate_fundamental_matrix(Points_a,Points_b):
-    # Try to implement this function as efficiently as possible. It will be
-    # called repeatly for part III of the project
-    ##################
-    # Your code here #
-    ##################
+    Offset Matrix
+    Find c_u and c_v and create a matrix of the form in the handout for T_offset
+
+    Scale Matrix
+    Subtract the means of the u and v coordinates, then take the reciprocal of
+    their standard deviation i.e. 1 / np.std([...]). Then construct the scale
+    matrix in the form provided in the handout for T_scale
+
+    :param Points: set of [n x 2] 2D points
+    :return: a tuple of (normalized_points, T) where T is the transformation
+    matrix
+    """
+    ########################
+    # TODO: Your code here #
+    ########################
+    # This is a placeholder with the identity matrix for T replace with the
+    # real transformation matrix for this set of points
+    T = np.eye(3)
+
+    return Points, T
+
+
+def estimate_fundamental_matrix(Points1, Points2):
+    """
+    Estimates the fundamental matrix given set of point correspondences in
+    Points1 and Points2.
+
+    Points1 is an [n x 2] matrix of 2D coordinate of points on Image A
+    Points2 is an [n x 2] matrix of 2D coordinate of points on Image B
+
+    Try to implement this function as efficiently as possible. It will be
+    called repeatedly for part III of the project
+
+    After normalizing your coordinates in Part 3, don't forget to adjust your
+    fundamental matrix so that it can operate on the original pixel coordinates!
+
+    :return F_matrix, the [3 x 3] fundamental matrix
+    """
+    ########################
+    # TODO: Your code here #
+    ########################
 
     # This is an intentionally incorrect Fundamental matrix placeholder
-    F_matrix = np.array([[0,0,-.0004],[0,0,.0032],[0,-0.0044,.1034]])
+    F_matrix = np.array([[0, 0, -.0004], [0, 0, .0032], [0, -0.0044, .1034]])
 
     return F_matrix
 
-# Takes h, w to handle boundary conditions
-def apply_positional_noise(points, h, w, interval=3, ratio=0.2):
-    """ 
-    The goal of this function to randomly perturbe the percentage of points given 
-    by ratio. This can be done by using numpy functions. Essentially, the given 
-    ratio of points should have some number from [-interval, interval] added to
-    the point. Make sure to account for the points not going over the image 
-    boundary by using np.clip and the (h,w) of the image. 
-    
-    Key functions include but are not limited to:
-        - np.random.rand
-        - np.clip
 
-    Arugments:
-        points :: numpy array 
-            - shape: [num_points, 2] ( note that it is <x,y> )
-            - desc: points for the image in an array
-        h :: int 
-            - desc: height of the image - for clipping the points between 0, h
-        w :: int 
-            - desc: width of the image - for clipping the points between 0, h
-        interval :: int 
-            - desc: this should be the range from which you decide how much to
-            tweak each point. i.e if interval = 3, you should sample from [-3,3]
-        ratio :: float
-            - desc: tells you how many of the points should be tweaked in this
-            way. 0.2 means 20 percent of the points will have some number from 
-            [-interval, interval] added to the point. 
+def ransac_fundamental_matrix(matches1, matches2, num_iters):
     """
-    ##################
-    # Your code here #
-    ##################
-    return points
+    Find the best fundamental matrix using RANSAC on potentially matching
+    points. Run RANSAC for num_iters.
 
-# Apply noise to the matches. 
-def apply_matching_noise(points, ratio=0.2):
-    """ 
-    The goal of this function to randomly shuffle the percentage of points given 
-    by ratio. This can be done by using numpy functions. 
-    
-    Key functions include but are not limited to:
-        - np.random.rand
-        - np.random.shuffle  
+    matches1 and matches2 are the [N x 2] coordinates of the possibly
+    matching points from two pictures. Each row is a correspondence
+     (e.g. row 42 of matches1 is a point that corresponds to row 42 of matches2)
 
-    Arugments:
-        points :: numpy array 
-            - shape: [num_points, 2] 
-            - desc: points for the image in an array
-        ratio :: float
-            - desc: tells you how many of the points should be tweaked in this
-            way. 0.2 means 20 percent of the points will be randomly shuffled.
+    best_Fmatrix is the [3 x 3] fundamental matrix, inliers1 and inliers2 are
+    the [M x 2] corresponding points (some subset of matches1 and matches2) that
+    are inliners with respect to best_Fmatrix
+
+
+    For this section, use RANSAC to find the best fundamental matrix by randomly
+    sampling interest points. You would reuse estimate_fundamental_matrix from
+    Part 2 of this assignment.
+
+    If you are trying to produce an uncluttered visualization of epipolar lines,
+    you may want to return no more than 30 points for either image.
+
+    :return: best_Fmatrix, inliers1, inliers2
     """
-    ##################
-    # Your code here #
-    ##################
-    return points
+    ########################
+    # TODO: Your code here #
+    ########################
 
-
-# Find the best fundamental matrix using RANSAC on potentially matching
-# points
-# 'matches_a' and 'matches_b' are the Nx2 coordinates of the possibly
-# matching points from pic_a and pic_b. Each row is a correspondence (e.g.
-# row 42 of matches_a is a point that corresponds to row 42 of matches_b.
-# 'Best_Fmatrix' is the 3x3 fundamental matrix
-# 'inliers_a' and 'inliers_b' are the Mx2 corresponding points (some subset
-# of 'matches_a' and 'matches_b') that are inliers with respect to
-# Best_Fmatrix.
-def ransac_fundamental_matrix(matches_a, matches_b):
-    # For this section, use RANSAC to find the best fundamental matrix by
-    # randomly sampling interest points. You would reuse
-    # estimate_fundamental_matrix() from part 2 of this assignment.
-    # If you are trying to produce an uncluttered visualization of epipolar
-    # lines, you may want to return no more than 30 points for either left or
-    # right images.
-    ##################
-    # Your code here #
-    ##################
-
-    # Your ransac loop should contain a call to 'estimate_fundamental_matrix()'
+    # Your RANSAC loop should contain a call to 'estimate_fundamental_matrix()'
     # that you wrote for part II.
 
-    # placeholders, you can delete all of this
-    Best_Fmatrix = estimate_fundamental_matrix(matches_a[0:9,:],matches_b[0:9,:])
-    inliers_a = matches_a[0:29,:]
-    inliers_b = matches_b[0:29,:]
+    Best_Fmatrix = estimate_fundamental_matrix(matches1[0:9, :], matches2[0:9, :])
+    inliers_a = matches1[0:29, :]
+    inliers_b = matches2[0:29, :]
 
     return Best_Fmatrix, inliers_a, inliers_b
+
+
+def matches_to_3d(points1, points2, M1, M2):
+    """
+    Given two sets of points and two projection matrices, you will need to solve
+    for the ground-truth 3D points using np.linalg.lstsq(). For a brief reminder
+    of how to do this, please refer to Question 5 from the written questions for
+    this project.
+
+
+    :param points1: [N x 2] points from image1
+    :param points2: [N x 2] points from image2
+    :param M1: [3 x 4] projection matrix of image2
+    :param M2: [3 x 4] projection matrix of image2
+    :return: [N x 3] list of solved ground truth 3D points for each pair of 2D
+    points from points1 and points2
+    """
+    points3d = []
+    ########################
+    # TODO: Your code here #
+    ########################
+
+    return points3d
