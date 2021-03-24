@@ -65,7 +65,25 @@
 \fancyhf{}
 \lhead{Project 5 Questions}
 \rhead{CSCI 1430}
-\rfoot{\thepage}
+\lfoot{\textcolor{red}{Only 
+\ifcase\thepage
+\or A1
+\or A1
+\or A2
+\or A3
+\or A4
+\or A4
+\or Q5
+\or A5
+\or A6
+\or A6
+\or feedback
+\else
+EXTRA PAGE ADDED
+\fi
+should be on this page
+}}
+\rfoot{\thepage/11}
 
 \date{}
 
@@ -79,7 +97,7 @@
 
 \section*{Instructions}
 \begin{itemize}
-  \item 5 questions.
+  \item 6 questions.
   \item Write code where appropriate; feel free to include images or equations.
   \item Please make this document anonymous.
   \item This assignment is \textbf{fixed length}, and the pages have been assigned for you in Gradescope. As a result, \textbf{please do NOT add any new pages}. We will provide ample room for you to answer the questions. If you \emph{really} wish for more space, please add a page \emph{at the end of the document}.
@@ -145,6 +163,8 @@
 \item converge to a point outside of the image plane, and
 \item intersect at more than one point?
 \end{enumerate}
+
+We highly recommend using this \href{https://browncsci1430.github.io/webpage/demos/stereo_camera_visualization/index.html}{interactive demo} to explore the different scenarios and get a better feel for epipolar geometry.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
