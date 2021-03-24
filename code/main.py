@@ -16,7 +16,7 @@ def parse_args():
     parser.add_argument(
         '--sequence',
         required=True,
-        choices=['mikeandikes', 'cards', 'dollar'],
+        choices=['mikeandikes', 'cards', 'dollar', 'extracredit'],
         help='Which image sequence to use')
     parser.add_argument(
         '--data',
