@@ -56,7 +56,7 @@ def calculate_projection_matrix(image, markers):
     return M
 
 
-def normalize_coordinates(Points):
+def normalize_coordinates(points):
     """
     ============================ EXTRA CREDIT ============================
     Normalize the given Points before computing the fundamental matrix. You
@@ -73,8 +73,8 @@ def normalize_coordinates(Points):
     their standard deviation i.e. 1 / np.std([...]). Then construct the scale
     matrix in the form provided in the handout for T_scale
 
-    :param Points: set of [n x 2] 2D points
-    :return: a tuple of (normalized_points, T) where T is the transformation
+    :param points: set of [n x 2] 2D points
+    :return: a tuple of (normalized_points, T) where T is the [3 x 3] transformation
     matrix
     """
     ########################
@@ -84,16 +84,16 @@ def normalize_coordinates(Points):
     # real transformation matrix for this set of points
     T = np.eye(3)
 
-    return Points, T
+    return points, T
 
 
-def estimate_fundamental_matrix(Points1, Points2):
+def estimate_fundamental_matrix(points1, points2):
     """
     Estimates the fundamental matrix given set of point correspondences in
-    Points1 and Points2.
+    points1 and points2.
 
-    Points1 is an [n x 2] matrix of 2D coordinate of points on Image A
-    Points2 is an [n x 2] matrix of 2D coordinate of points on Image B
+    points1 is an [n x 2] matrix of 2D coordinate of points on Image A
+    points2 is an [n x 2] matrix of 2D coordinate of points on Image B
 
     Try to implement this function as efficiently as possible. It will be
     called repeatedly for part IV of the project
@@ -143,11 +143,11 @@ def ransac_fundamental_matrix(matches1, matches2, num_iters):
     # Your RANSAC loop should contain a call to 'estimate_fundamental_matrix()'
     # that you wrote for part II.
 
-    Best_Fmatrix = estimate_fundamental_matrix(matches1[0:9, :], matches2[0:9, :])
+    best_Fmatrix = estimate_fundamental_matrix(matches1[0:9, :], matches2[0:9, :])
     inliers_a = matches1[0:29, :]
     inliers_b = matches2[0:29, :]
 
-    return Best_Fmatrix, inliers_a, inliers_b
+    return best_Fmatrix, inliers_a, inliers_b
 
 
 def matches_to_3d(points1, points2, M1, M2):
