@@ -58,6 +58,7 @@ def calculate_projection_matrix(image, markers):
 
 def normalize_coordinates(Points):
     """
+    ============================ EXTRA CREDIT ============================
     Normalize the given Points before computing the fundamental matrix. You
     should perform the normalization to make the mean of the points 0
     and the average magnitude 1.0.
@@ -95,10 +96,11 @@ def estimate_fundamental_matrix(Points1, Points2):
     Points2 is an [n x 2] matrix of 2D coordinate of points on Image B
 
     Try to implement this function as efficiently as possible. It will be
-    called repeatedly for part III of the project
+    called repeatedly for part IV of the project
 
-    After normalizing your coordinates in Part 3, don't forget to adjust your
-    fundamental matrix so that it can operate on the original pixel coordinates!
+    If you normalize your coordinates for extra credit, don't forget to adjust
+    your fundamental matrix so that it can operate on the original pixel
+    coordinates!
 
     :return F_matrix, the [3 x 3] fundamental matrix
     """
@@ -124,7 +126,6 @@ def ransac_fundamental_matrix(matches1, matches2, num_iters):
     best_Fmatrix is the [3 x 3] fundamental matrix, inliers1 and inliers2 are
     the [M x 2] corresponding points (some subset of matches1 and matches2) that
     are inliners with respect to best_Fmatrix
-
 
     For this section, use RANSAC to find the best fundamental matrix by randomly
     sampling interest points. You would reuse estimate_fundamental_matrix from
