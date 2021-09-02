@@ -17,7 +17,7 @@
 % https://en.wikibooks.org/wiki/LaTeX
 %
 % Good luck!
-% James and the 1430 staff
+% Srinath and the 1430 staff
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -63,9 +63,9 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{Project 5 Questions}
+\lhead{Homework 3 Questions}
 \rhead{CSCI 1430}
-\lfoot{\textcolor{red}{Only 
+\lfoot{\textcolor{red}{Only
 \ifcase\thepage
 \or A1
 \or A1
@@ -87,7 +87,7 @@ should be on this page
 
 \date{}
 
-\title{\vspace{-1cm}Project 5 Questions}
+\title{\vspace{-1cm}Homework 3 Questions}
 
 
 \begin{document}
@@ -120,9 +120,9 @@ should be on this page
 
 % \begin{enumerate}[(a)]
 
-% \item 
+% \item
 
-% \item 
+% \item
 
 % \end{enumerate}
 
@@ -147,9 +147,9 @@ should be on this page
 
 % \begin{enumerate}[(a)]
 
-% \item 
+% \item
 
-% \item 
+% \item
 
 % \end{enumerate}
 
@@ -157,11 +157,15 @@ should be on this page
 
 % Please leave the pagebreak
 \pagebreak
-\paragraph{Q3:} In two-view camera geometry, what does it mean when the epipolar lines: 
+\paragraph{Q3:} In two-view camera geometry, what does it mean when the epipolar lines:
 \begin{enumerate}[(a)]
 \item radiate out of a point on the image plane,
+
+\includegraphics[width = 0.25\linewidth]{hw3-q3-intersect-at-1-point.PNG}
 \item converge to a point outside of the image plane, and
 \item intersect at more than one point?
+
+\includegraphics[width = 0.25\linewidth]{hw3-q3-not-rank-defficient.PNG}
 \end{enumerate}
 
 We highly recommend using this \href{https://browncsci1430.github.io/webpage/demos/stereo_camera_visualization/index.html}{interactive demo} to explore the different scenarios and get a better feel for epipolar geometry.
@@ -173,9 +177,9 @@ We highly recommend using this \href{https://browncsci1430.github.io/webpage/dem
 
 % \begin{enumerate}[(a)]
 
-% \item 
+% \item
 
-% \item 
+% \item
 
 % \item
 
@@ -192,7 +196,7 @@ Suppose that we have the following three datasets of an object of unknown geomet
 \end{enumerate}
 
 \begin{enumerate}
-\item For each of the above setups, decide if we can calculate the essential matrix, the fundamental matrix, or both. \\ 
+\item For each of the above setups, decide if we are able to find/calculate the essential matrix, the fundamental matrix, or both. \\
 \emph{LaTeX:} To fill in boxes, replace `\textbackslash square' with `\textbackslash blacksquare' for your answer. \\ \\
 (a)
 \begin{tabular}[h]{lc}
@@ -226,9 +230,9 @@ Both & $\square$ \\
 
 % \begin{enumerate}[(a)]
 
-% \item 
+% \item
 
-% \item 
+% \item
 
 % \item
 
@@ -265,7 +269,7 @@ D'&=(-0.3, 2.6)
 
 Let's assume that each point in $ABCD$ was approximately mapped to its corresponding point in $A'B'C'D'$ by a $2\times2$ transformation matrix $M$.
 
-e.g. if $A = \begin{pmatrix} x \\ y \end{pmatrix}$ and $A' = \begin{pmatrix} x' \\ y' \end{pmatrix}$, and $\boldsymbol{M} = \begin{pmatrix} m_{1,1} & m_{1,2} \\ m_{2,1} & m_{2,2} \end{pmatrix}$ 
+e.g. if $A = \begin{pmatrix} x \\ y \end{pmatrix}$ and $A' = \begin{pmatrix} x' \\ y' \end{pmatrix}$, and $\boldsymbol{M} = \begin{pmatrix} m_{1,1} & m_{1,2} \\ m_{2,1} & m_{2,2} \end{pmatrix}$
 
 then $\begin{pmatrix} m_{1,1} & m_{1,2} \\ m_{2,1} & m_{2,2} \end{pmatrix} * \begin{pmatrix} x \\ y \end{pmatrix} \approx \begin{pmatrix} x' \\ y' \end{pmatrix}$
 
@@ -281,7 +285,7 @@ We would like to approximate $\boldsymbol{M}$ using least squares for linear reg
 
 We have provided you with a template of what they should look like below.
 
-\emph{Hint:} you have a pair of equations for each $x$-$x'$ correspondence, giving you $8$ rows in $\boldsymbol{Q}$ and $b$. If you're having trouble, try writing out the equations for each pair of points. 
+\emph{Hint:} You have a pair of equations for each $x$-$x'$ correspondence, giving you $8$ rows in $\boldsymbol{Q}$ and $b$. If you're having trouble, try writing out the equations for each pair of points like in part (a).
 
 \emph{Note:} Systems of linear equations are typically written in the form $\boldsymbol{A}x=b$, but since we have already defined $A$ and $x$, we're writing it as $\boldsymbol{Q}m=b$
 
@@ -319,25 +323,25 @@ Thankfully, the computer can do all of this for us! \texttt{numpy.linalg.lstsq()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \pagebreak
-\paragraph{Q6:} 
+\paragraph{Q6:}
 In searching for solutions to slow the spread of COVID-19, many governments and organizations have looked to technology, some of which uses cameras and computer vision. Please read these articles on
-\href{https://thenextweb.com/neural/2020/03/21/why-ai-might-be-the-most-effective-weapon-we-have-to-fight-covid-19/}{AI usage during the pandemic} and a \href{https://www.bbc.com/news/technology-51439401}{‘close contact detector’}, and answer the following questions. 
+\href{https://thenextweb.com/neural/2020/03/21/why-ai-might-be-the-most-effective-weapon-we-have-to-fight-covid-19/}{AI usage during the pandemic} and a \href{https://www.bbc.com/news/technology-51439401}{‘close contact detector’}, and answer the following questions.
 \begin{enumerate}[(a)]
 
-    \item 
-    Of the computer vision solutions described, which single solution would you most support and why? 
+    \item
+    Of the computer vision solutions described, which single solution would you most support and why?
     Which one would you least support and why? (3-4 sentences) \\
     \emph{Note: You may make whichever assumptions you like about how the specific solution might work, but please state them.}
-    
-    \item 
+
+    \item
     Suppose that the `close contact detector' used computer vision as one of its signals, by surreptitiously using your smartphone's cameras along with facial recognition to know who you were near. In a time of crisis, would you be comfortable with this? Why? (3-4 sentences)
 \end{enumerate}
 
-The surveillance and biometric measures that help us today may outlast the pandemic and become part of our daily lives. 
+The surveillance and biometric measures that help us today may outlast the pandemic and become part of our daily lives.
 \begin{enumerate}[(c)]
     \item
     The computer vision technology behind the `close contact detector' starts to be used by governments to locate missing persons and criminal fugitives through your smartphone, without you knowing. Would you be comfortable with this? Why? (3-4 sentences)
-    
+
     \item
     The technology then becomes commercial software, and it is integrated into a new dating app `Cvpid'. Once installed, as you go about your day, the app passively scans people near you and matches their faces to their social media profiles to find potential partners based on your personal preferences. Would you be comfortable with this? Why? (3-4 sentences)
 
@@ -349,13 +353,13 @@ The surveillance and biometric measures that help us today may outlast the pande
 
 % \begin{enumerate}[(a)]
 
-% \item 
+% \item
 
-% \item 
+% \item
 
-% \item 
+% \item
 
-% \item 
+% \item
 
 % \end{enumerate}
 
