@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
-from random import sample
-
+import random
 
 def calculate_projection_matrix(image, markers):
     """
@@ -136,6 +135,10 @@ def ransac_fundamental_matrix(matches1, matches2, num_iters):
 
     :return: best_Fmatrix, inliers1, inliers2
     """
+    # DO NOT TOUCH THE FOLLOWING LINES
+    random.seed(0)
+    np.random.seed(0)
+    
     ########################
     # TODO: Your code here #
     ########################
