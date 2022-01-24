@@ -5,7 +5,7 @@ from matplotlib.widgets import Slider, Button
 
 
 # Setting up the point cloud
-file_data_path= "./bunny.xyz"
+file_data_path= "./q2-bunny.xyz"
 point_cloud = np.loadtxt(file_data_path, skiprows=0, max_rows=1000000)
 # center it
 point_cloud -= np.mean(point_cloud,axis=0)
