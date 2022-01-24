@@ -127,8 +127,9 @@ def ransac_fundamental_matrix(matches1, matches2, num_iters):
     are inliners with respect to best_Fmatrix
 
     For this section, use RANSAC to find the best fundamental matrix by randomly
-    sampling interest points. You would reuse estimate_fundamental_matrix from
-    Part 2 of this assignment.
+    sampling interest points. You would call the function that estimates the 
+    fundamental matrix (either the "cheat" function or your own 
+    estimate_fundamental_matrix) iteratively within this function.
 
     If you are trying to produce an uncluttered visualization of epipolar lines,
     you may want to return no more than 30 points for either image.
