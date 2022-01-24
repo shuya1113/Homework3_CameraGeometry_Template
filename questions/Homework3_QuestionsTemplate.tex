@@ -70,6 +70,7 @@
 \or A1
 \or A1
 \or A2
+\or A2
 \or A3
 \or A4
 \or A4
@@ -135,23 +136,86 @@ should be on this page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Please leave the pagebreak
 \pagebreak
-\paragraph{Q2:} In two-view camera geometry and depth estimation:
+\paragraph{Q2:} In lecture, you've learned that cameras can be represented by intrinsic and extrinsic matrices. These matrices can then be used to calculate the projections of points with 3D world coordinates onto 2D images. 
 \begin{enumerate} [(a)]
-\item Why does rectification simplify matching features across our stereo image pair?
-\item What information do we need to know to rectify our image pair?
+\item For each of the following camera specifications, fill in its intrinsic and extrinsic matrices. Then perform the multiplications and homogenize to find the 2D coordinates of the projected point on the image.
+\begin{enumerate} [(i)]
+
+\item A camera with focal length in both $x$ and $y$ directions of $1$, and\\
+no skew, translation, or rotation.
+\vspace{-0.3cm}
+\begin{align}
+    \begin{pmatrix} 
+    \_\_ & \_\_ & $0$ \\ 
+    $0$ & \_\_ & $0$ \\ 
+    $0$ & $0$ & $1$ \end{pmatrix} *
+    \begin{pmatrix} 
+    \_\_ & \_\_ & \_\_ & \_\_ \\ 
+    \_\_ & \_\_ & \_\_ & \_\_ \\ 
+    \_\_ & \_\_ & \_\_ & \_\_ \end{pmatrix} * 
+    \begin{pmatrix} 
+    $30$ \\ 
+    $-20$ \\ 
+    $10$ \\ 
+    $1$ \end{pmatrix}
+    = \begin{pmatrix}  \_\_ \\ \_\_ \\ \_\_ \end{pmatrix}
+    = \_\_ * \begin{pmatrix}  \_\_ \\ \_\_ \\ $1$ \end{pmatrix}
+\end{align}
+
+\item A camera with focal length in both $x$ and $y$ directions of $2$,\\a translation of $5$ along the x-axis, and\\ no skew or rotation.
+\vspace{-0.3cm}
+\begin{align}
+    \begin{pmatrix} 
+    \_\_ & \_\_ & $0$ \\ 
+    $0$ & \_\_ & $0$ \\ 
+    $0$ & $0$ & $1$ \end{pmatrix} *
+    \begin{pmatrix} 
+    \_\_ & \_\_ & \_\_ & \_\_ \\ 
+    \_\_ & \_\_ & \_\_ & \_\_ \\ 
+    \_\_ & \_\_ & \_\_ & \_\_ \end{pmatrix} * 
+    \begin{pmatrix} 
+    $30$ \\ 
+    $-20$ \\ 
+    $10$ \\ 
+    $1$ \end{pmatrix}
+    = \begin{pmatrix}  \_\_ \\ \_\_ \\ \_\_ \end{pmatrix}
+    = \_\_ * \begin{pmatrix}  \_\_ \\ \_\_ \\ $1$ \end{pmatrix}
+\end{align}
+
+\end{enumerate}
+\item Compare the two image coordinates you've calculated in parts a and b. Explain how each parameter affects the final image coordinate. (2-3 sentences)
+
+\item In the questions folder, we've provided stencil code for a camera simulation in camera\_simulation.py. Given a projection matrix, the simulator visualizes an image that a camera would produce. Please implement calculate\_projection\_matrix() by calculating the projection matrix using the parameters given in the code (see stencil for more detail). Paste your code for this function and attach a screenshot of the working demo once you finish!
+
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \paragraph{A2:} Your answer here.
 % Uncomment the stencil below and fill in your solution.
 
-% \begin{enumerate}[(a)]
-
-% \item
+% \begin{enumerate}[(b)]
 
 % \item
 
 % \end{enumerate}
+
+% \begin{enumerate}[(c)]
+
+% \item
+
+% \begin{python}
+% # Your code here
+% \end{python}
+
+% \includegraphics[width=0.5\linewidth]{yourscreenshot.png}
+
+% \end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Please leave the pagebreak
+\pagebreak
+\paragraph{A2 (continued):} Your answer here.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
