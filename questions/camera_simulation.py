@@ -36,14 +36,7 @@ def calculate_projection_matrix(tx, ty, tz, alpha, beta, gamma, fx, fy, skew, u,
     # Hint: Calculate the rotation matrices for the x, y, and z axes separately.
     # Then multiply them to get the rotational part of the extrinsic matrix.
     ########################
-    intrinsic = np.array([[fx, skew, u], [0, fy, v], [0, 0, 1]])
-    Rx = np.array([[1, 0, 0], [0, np.cos(alpha), -np.sin(alpha)], [0, np.sin(alpha), np.cos(alpha)]])
-    Ry = np.array([[np.cos(beta), 0, np.sin(beta)], [0, 1, 0], [-np.sin(beta), 0, np.cos(beta)]])
-    Rz = np.array([[np.cos(gamma), -np.sin(gamma), 0], [np.sin(gamma), np.cos(gamma), 0], [0, 0, 1]])
-    rotation = np.matmul(Rz, np.matmul(Ry,Rx))
-    translation = np.array([[tx], [ty], [tz]])
-    extrinsic = np.concatenate((rotation,translation), axis=1)
-    return intrinsic @ extrinsic
+    pass
 
 def find_coords(projection_matrix):
     """
