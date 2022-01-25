@@ -10,4 +10,3 @@ results/*
 *.fls
 *.fdb_latexmk
 *.aux
-questions/*.pdf
