@@ -67,6 +67,9 @@
 \rhead{CSCI 1430}
 \lfoot{\textcolor{red}{Only
 \ifcase\thepage
+\or instructions
+\or A1
+\or A2
 \or A1
 \or A1
 \or A2
@@ -98,17 +101,35 @@ should be on this page
 
 \section*{Instructions}
 \begin{itemize}
-  \item 6 questions.
+  \item 2 ethical implications questions.
+  \item 5 technical questions.
   \item Write code where appropriate; feel free to include images or equations.
   \item Please make this document anonymous.
   \item This assignment is \textbf{fixed length}, and the pages have been assigned for you in Gradescope. As a result, \textbf{please do NOT add any new pages}. We will provide ample room for you to answer the questions. If you \emph{really} wish for more space, please add a page \emph{at the end of the document}.
   \item \textbf{We do NOT expect you to fill up each page with your answer.} Some answers will only be a few sentences long, and that is okay.
 \end{itemize}
 
-\section*{Questions}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagebreak 
+\section*{Ethical Implications}
+\paragraph{Q1:} One major application of camera calibration is surveillance systems. \href{https://www.browndailyherald.com/article/2020/02/cameras-installed-in-hegeman-hall}{As of 2020}, Brown University had around 800 surveillance cameras in place to "deter and solve crime". 
 
+One argument in favor of surveillance systems is that surveillance systems improve safety and that if you're not doing anything wrong, you don't have anything to worry about. Please respond to this argument and discuss your opinions on surveillance on campus and more broadly. In what circumstances do you believe that the potential benefits of surveillance outweigh potential concerns and why? [6-7 sentences]
+
+\paragraph{A1:} Your answer here.
+\pagebreak
+\paragraph{Q2:} Another area where surveillance comes up is drones. Drones do not require cameras if they are remotely controlled within line of sight. However, some drones are specifically built for surveillance purposes, and other drones increasingly use \href{https://link.springer.com/article/10.1007/s10846-017-0483-z}{sophisticated computer vision} strategies like feature matching to enable assisted or even autonomous flying in complex environments, but also raises surveillance concerns. 
+
+For your CS1430 final project, you are developing a drone for \href{https://www.cnn.com/2019/05/01/health/drone-organ-transplant-bn-trnd/index.html}{life-saving organ delivery}. You create a successful computer vision algorithm that allows your drone to navigate complex environments autonomously, and are approached by several organizations that want to pay you generously for access to your project.
+
+Please list three organizations that might be interested in acquiring your project for their own purposes. If each of these organizations used your project, who could benefit and how? Who could be harmed and how? [6-7 sentences]
+
+
+\paragraph{A2:} Your answer here.
+\pagebreak
+\section*{Technical Questions}
 \paragraph{Q1:} Given a stereo pair of cameras:
 \begin{enumerate} [(a)]
 \item Briefly describe triangulation (using images might be helpful).
@@ -387,41 +408,6 @@ Thankfully, the computer can do all of this for us! \texttt{numpy.linalg.lstsq()
 \end{align}
 
 \end{enumerate}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\pagebreak
-\paragraph{Q6:} Goal: Be aware of some of the implicit assumptions that shape our views and decisions regarding photography technology and discuss how some of the challenges in photography are part of a longer history of technological development and social change. 
-
-A common problem in photography and videography is properly calibrating lighting for a camera to capture a wide variety of skin tones. This issue stems from an inherited bias built into photography that light skin as the norm. Watch \href{https://www.youtube.com/watch?v=d16LNHIEJzs}{this video} on Kodak’s Shirley Card and answer the following questions.  
-\begin{enumerate}[(a)]
-
-    \item
-    What kind of harm can come to marginalized or minority populations that aren't considered when building imaging technology? Are we seeing any of these effects today? (3--4 sentences)
-
-    \item
-    Read about how some researchers are trying to take the racial bias out of computer vision applications \href{https://news.northeastern.edu/2021/02/22/humans-are-trying-to-take-bias-out-of-facial-recognition-programs-its-not-working-yet/}{here}. If you were developing and launching a new camera, what steps would you take to eliminate possible racial bias? (3--4 sentences)
-    
-    \item
-    It took chocolate and wood corporations complaining that their products couldn’t be photographed correctly for Kodak to adjust its film to be more inclusive of other skin tones. Who should be involved in shaping the direction of new photography developments in the future (companies, developers, interest groups etc)? (3--4 sentences)
-
-
-\end{enumerate}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{A6:} Your answer here.
-% Uncomment the stencil below and fill in your solution.
-
-% \begin{enumerate}[(a)]
-
-% \item
-
-% \item
-
-% \item
-
-% \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Please leave the pagebreak
