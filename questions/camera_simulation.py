@@ -3,9 +3,11 @@ import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 from matplotlib.widgets import Slider, Button
 
+# Initial random projection matrix
+initial_matrix_to_replace = np.random.rand(3,4)
 
 # Setting up the point cloud
-file_data_path= "./q2-bunny.xyz"
+file_data_path= "./bunny.xyz"
 point_cloud = np.loadtxt(file_data_path, skiprows=0, max_rows=1000000)
 # center it
 point_cloud -= np.mean(point_cloud,axis=0)
@@ -36,7 +38,7 @@ def calculate_projection_matrix(tx, ty, tz, alpha, beta, gamma, fx, fy, skew, u,
     # Hint: Calculate the rotation matrices for the x, y, and z axes separately.
     # Then multiply them to get the rotational part of the extrinsic matrix.
     ########################
-    pass
+    return initial_matrix_to_replace
 
 def find_coords(projection_matrix):
     """
@@ -182,6 +184,15 @@ imageY_slider = Slider(
 fig.text(0.2, 0.54, "Extrinsic Properties", size="12")
 fig.text(0.2, 0.84, "Intrinsic Properties", size="12")
 
+# Add text for projection matrix
+mLabelX = -0.40; mLabelY = -0.65
+mLabel = plt.text(mLabelX, mLabelY, "M=", size="12")
+mText = [[None,None,None,None], [None,None,None,None], [None,None,None,None]]
+for row in range(0,3):
+    for col in range(0,4):
+        mText[row][col] = plt.text(mLabelX + 0.5 + col*0.8, mLabelY - row*0.10, "{:.2f}".format(0), size="12")
+
+
 # list of all sliders
 sliders = [transX_slider, transY_slider, transZ_slider, rotX_slider, rotY_slider, rotZ_slider, focalX_slider, focalY_slider, skew_slider, imageX_slider, imageY_slider]
 
@@ -193,14 +204,17 @@ plots = ax.plot(coords[0], coords[1],'o', color="blue")[0]
 
 # The function to be called anytime a slider's value changes
 def update(val):
-    global plots
-    # Remove previously plotted points
-    plots.remove()
     # Replot with new camera properties
     projection_matrix = calculate_projection_matrix(transX_slider.val, transY_slider.val, transZ_slider.val, rotX_slider.val, rotY_slider.val, rotZ_slider.val, focalX_slider.val, focalY_slider.val, skew_slider.val, imageX_slider.val, imageY_slider.val)
     coords = find_coords(projection_matrix)
-    # Save plotted points in plots
-    plots = ax.plot(coords[0], coords[1],'o', color="blue")[0]
+    # Update plotted points in plots
+    plots.set_data(coords[0], coords[1])
+
+    # Update text labels
+    for row in range(0,3):
+        for col in range(0,4):
+            mText[row][col].set_text("{:.2f}".format(projection_matrix[row][col]))
+
 
 # register the update function with each slider
 for slider in sliders:
@@ -216,4 +230,5 @@ def reset(event):
         slider.reset()
 button.on_clicked(reset)
 
+update(None)
 plt.show()
