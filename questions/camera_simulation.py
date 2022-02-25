@@ -3,8 +3,10 @@ import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 from matplotlib.widgets import Slider, Button
 
-# Initial random projection matrix
-initial_matrix_to_replace = np.random.rand(3,4)
+# Initial random matrices
+initial_intrinsic_matrix_to_replace = np.random.rand(3,3)
+initial_extrinsic_matrix_to_replace = np.random.rand(3,4)
+initial_camera_matrix_to_replace = np.random.rand(3,4)
 
 # Setting up the point cloud
 file_data_path= "./bunny.xyz"
@@ -16,14 +18,14 @@ point_cloud = np.concatenate((point_cloud, np.ones((point_cloud.shape[0], 1))), 
 # move it in front of the camera
 point_cloud += np.array([0,0,-0.15,0])
 
-def calculate_projection_matrix(tx, ty, tz, alpha, beta, gamma, fx, fy, skew, u, v):
+def calculate_camera_matrix(tx, ty, tz, alpha, beta, gamma, fx, fy, skew, u, v):
     """
-    This function should calculate the projection matrix using the given
+    This function should calculate the camera matrix using the given
     intrinsic and extrinsic camera parameters.
     We recommend starting with calculating the intrinsic matrix (refer to lecture 8).
     Then calculate the rotational 3x3 matrix by calculating each axis separately and
     multiply them together.
-    Finally multiply the intrinsic and extrinsic matrices to obtain the projection matrix.
+    Finally multiply the intrinsic and extrinsic matrices to obtain the camera matrix.
 
 
     :params tx, ty, tz: Camera translation from origin
@@ -31,22 +33,22 @@ def calculate_projection_matrix(tx, ty, tz, alpha, beta, gamma, fx, fy, skew, u,
     :param fx, fy: focal length of camera
     :param skew: camera's skew
     :param u, v: image center coordinates
-    :return: [3 x 4] NumPy array of the projection matrix
+    :return: [3 x 4] NumPy array of the camera matrix
     """
     ########################
     # TODO: Your code here #
     # Hint: Calculate the rotation matrices for the x, y, and z axes separately.
     # Then multiply them to get the rotational part of the extrinsic matrix.
     ########################
-    return initial_matrix_to_replace
+    return initial_camera_matrix_to_replace, initial_intrinsic_matrix_to_replace, initial_extrinsic_matrix_to_replace
 
-def find_coords(projection_matrix):
+def find_coords(camera_matrix):
     """
-    This function calculates the coordinates given the student's calculated projection_matrix.
+    This function calculates the coordinates given the student's calculated camera matrix.
     Normalizes the coordinates.
     Already implemented.
     """
-    coords = np.matmul(projection_matrix, point_cloud.T)
+    coords = np.matmul(camera_matrix, point_cloud.T)
     return coords / coords[2]
 
 
@@ -184,36 +186,62 @@ imageY_slider = Slider(
 fig.text(0.2, 0.54, "Extrinsic Properties", size="12")
 fig.text(0.2, 0.84, "Intrinsic Properties", size="12")
 
-# Add text for projection matrix
-mLabelX = -0.40; mLabelY = -0.65
+# Add text for intrinsic matrix
+kLabelX = -4; kLabelY = -0.65
+kLabel = plt.text(kLabelX, kLabelY, "K=", size="12")
+kText = [[None,None,None], [None,None,None], [None,None,None]]
+for row in range(0,3):
+    for col in range(0,3):
+        kText[row][col] = plt.text(kLabelX + 0.4 + col*0.5, kLabelY - row*0.10, "{:.2f}".format(0), size="12")
+
+# Add text for extrinsic matrix
+rtLabelX = -2; rtLabelY = -0.65
+rtLabel = plt.text(rtLabelX, rtLabelY, "Rt=", size="12")
+rtText = [[None,None,None,None], [None,None,None,None], [None,None,None,None]]
+for row in range(0,3):
+    for col in range(0,4):
+        rtText[row][col] = plt.text(rtLabelX + 0.4 + col*0.5, rtLabelY - row*0.10, "{:.2f}".format(0), size="12")
+
+# Add text for camera matrix
+mLabelX = 0.50; mLabelY = -0.65
 mLabel = plt.text(mLabelX, mLabelY, "M=", size="12")
 mText = [[None,None,None,None], [None,None,None,None], [None,None,None,None]]
 for row in range(0,3):
     for col in range(0,4):
-        mText[row][col] = plt.text(mLabelX + 0.5 + col*0.8, mLabelY - row*0.10, "{:.2f}".format(0), size="12")
+        mText[row][col] = plt.text(mLabelX + 0.4 + col*0.5, mLabelY - row*0.10, "{:.2f}".format(0), size="12")
 
 
 # list of all sliders
 sliders = [transX_slider, transY_slider, transZ_slider, rotX_slider, rotY_slider, rotZ_slider, focalX_slider, focalY_slider, skew_slider, imageX_slider, imageY_slider]
 
 # initial plot calculation using default camera values
-projection_matrix = calculate_projection_matrix(transX_slider.val, transY_slider.val, transZ_slider.val, rotX_slider.val, rotY_slider.val, rotZ_slider.val, focalX_slider.val, focalY_slider.val, skew_slider.val, imageX_slider.val, imageY_slider.val)
-coords = np.matmul(projection_matrix, point_cloud.T)
+camera_matrix, intrinsic_matrix, extrinsic_matrix = calculate_camera_matrix(transX_slider.val, transY_slider.val, transZ_slider.val, rotX_slider.val, rotY_slider.val, rotZ_slider.val, focalX_slider.val, focalY_slider.val, skew_slider.val, imageX_slider.val, imageY_slider.val)
+coords = np.matmul(camera_matrix, point_cloud.T)
 coords /= coords[2]
 plots = ax.plot(coords[0], coords[1],'o', color="blue")[0]
 
 # The function to be called anytime a slider's value changes
 def update(val):
     # Replot with new camera properties
-    projection_matrix = calculate_projection_matrix(transX_slider.val, transY_slider.val, transZ_slider.val, rotX_slider.val, rotY_slider.val, rotZ_slider.val, focalX_slider.val, focalY_slider.val, skew_slider.val, imageX_slider.val, imageY_slider.val)
-    coords = find_coords(projection_matrix)
+    camera_matrix, intrinsic_matrix, extrinsic_matrix = calculate_camera_matrix(transX_slider.val, transY_slider.val, transZ_slider.val, rotX_slider.val, rotY_slider.val, rotZ_slider.val, focalX_slider.val, focalY_slider.val, skew_slider.val, imageX_slider.val, imageY_slider.val)
+    coords = find_coords(camera_matrix)
     # Update plotted points in plots
     plots.set_data(coords[0], coords[1])
+
+    # Update text labels for intrinsic matrix
+    for row in range(0,3):
+        for col in range(0,3):
+            kText[row][col].set_text("{:.2f}".format(intrinsic_matrix[row][col]))
+
+    # Update text labels for extrinsic matrix
+    for row in range(0,3):
+        for col in range(0,4):
+            rtText[row][col].set_text("{:.2f}".format(extrinsic_matrix[row][col]))
 
     # Update text labels
     for row in range(0,3):
         for col in range(0,4):
-            mText[row][col].set_text("{:.2f}".format(projection_matrix[row][col]))
+            mText[row][col].set_text("{:.2f}".format(camera_matrix[row][col]))
 
 
 # register the update function with each slider
