@@ -189,9 +189,35 @@ def ransac_fundamental_matrix(matches1, matches2, num_iters):
     # Your RANSAC loop should contain a call to 'estimate_fundamental_matrix()'
     # that you wrote for part II.
 
-    best_Fmatrix = estimate_fundamental_matrix(matches1[0:9, :], matches2[0:9, :])
-    inliers_a = matches1[0:29, :]
-    inliers_b = matches2[0:29, :]
+    # best_Fmatrix = estimate_fundamental_matrix(matches1[0:9, :], matches2[0:9, :])
+    # inliers_a = matches1[0:29, :]
+    # inliers_b = matches2[0:29, :]
+    best_Fmatrix = np.zeros((3, 3))
+    x1 = np.column_stack((matches1, np.ones(matches1.shape[0])))
+    x1 = np.tile(x1, 3)
+    x2 = np.column_stack((matches2, np.ones(matches2.shape[0])))
+    x2 = x2.repeat(3, axis=1)
+
+    A = x1*x2
+    max = 0
+    sample = 8
+
+    for i in range(num_iters):
+        match_id = np.random.randint(np.shape(matches1)[0],size=sample)
+        F_temp = estimate_fundamental_matrix(matches1[match_id, :], matches2[match_id, :])
+        dist = np.dot(A, F_temp.reshape((-1)))
+        dist = np.abs(dist)
+        num = np.sum(dist < 0.02)
+        if num > max:
+            max = num
+            best_Fmatrix = F_temp.copy()
+
+    F_flat = best_Fmatrix.reshape((-1))
+    val = np.dot(A, F_flat)
+    val = np.abs(val)
+    ind = np.argsort(val)
+    inliers_a = matches1[ind[:29]]
+    inliers_b = matches2[ind[:29]]
 
     return best_Fmatrix, inliers_a, inliers_b
 
