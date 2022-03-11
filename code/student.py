@@ -271,13 +271,20 @@ def matches_to_3d(points1, points2, M1, M2):
     n33=M2[2,2]
     n34=M2[2,3]
 
-    a=np.array([[m31-m11,m32-m12,m33-m13],[m31-m21,m32-m22,m33-m23],[n31-n11,n32-n12,n33-n13],[n31-n21,n32-n22,n33-n23]])
+
     for i in range(len):
         u1=points1[i,0]
         v1=points1[i,1]
         u2=points2[i,0]
         v2=points2[i,1]
-        b=[m14-m34*u1,m24-m34*v1,n14-n34*u2,n24-n34*v2]
+        a=np.array([[m31*u1-m11,m32*u1-m12,m33*u1-m13],
+                    [m31*v1-m21,m32*v1-m22,m33*v1-m23],
+                    [n31*u2-n11,n32*u2-n12,n33*u2-n13],
+                    [n31*v2-n21,n32*v2-n22,n33*v2-n23]])
+        b=np.transpose([m14-m34*u1,
+                        m24-m34*v1,
+                        n14-n34*u2,
+                        n24-n34*v2])
         points3d[i,:] = np.linalg.lstsq(a, b,rcond=None)[0]      
     points3d = points3d.tolist()
     return points3d
