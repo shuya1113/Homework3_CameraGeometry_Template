@@ -48,34 +48,29 @@ def calculate_projection_matrix(image, markers):
     ########################
     # This M matrix came from a call to rand(3,4). It leads to a high residual.
     len=np.shape(points2d)[0]
-    ct = 0
     A = np.zeros((2*len,11))
     b = np.zeros((2*len,1))
+    
+    ct = 0
     for i in range(len):
         X = points3d[i,0]
         Y = points3d[i,1]
         Z = points3d[i,2]
         u = points2d[i,0]
         v = points2d[i,1]
-        row1 = [X,Y,Z,1,0,0,0,0,-u*X,-u*Y,-u*Z]
-        row2 = [0,0,0,0,X,Y,Z,1,-v*X,-v*Y,-v*Z]
-        A[ct,:] = row1
+        r1 = [X,Y,Z,1,0,0,0,0,-u*X,-u*Y,-u*Z]
+        r2 = [0,0,0,0,X,Y,Z,1,-v*X,-v*Y,-v*Z]
+        A[ct,:] = r1
         b[ct,:] = u
         ct = ct + 1
-        A[ct,:] = row2
+        A[ct,:] = r2
         b[ct,:] = v
         ct = ct + 1  
-
-    vec = np.linalg.lstsq(A, b, rcond=None)[0]
-    A1 = np.transpose(vec[0:4])
-    B1 = np.transpose(vec[4:8])
-    C1 = vec[8:11]
-    C1 = np.append(C1, 1)
-
     M = np.zeros((3, 4))
-    M[0,:] = A1
-    M[1,:] = B1
-    M[2,:] = C1
+    vec = np.linalg.lstsq(A, b, rcond=None)[0]
+    M[0,:] = np.transpose(vec[0:4])
+    M[1,:] = np.transpose(vec[4:8])
+    M[2,:] = np.append(vec[8:11], 1)
 
     return M
 
@@ -219,6 +214,7 @@ def ransac_fundamental_matrix(matches1, matches2, num_iters):
     val = np.dot(A, F_flat)
     val = np.abs(val)
     ind = np.argsort(val)[:29]
+    
     inliers_a = matches1[ind]
     inliers_b = matches2[ind]
     return best_Fmatrix, inliers_a, inliers_b
