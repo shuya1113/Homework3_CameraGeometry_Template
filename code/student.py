@@ -218,10 +218,9 @@ def ransac_fundamental_matrix(matches1, matches2, num_iters):
     F_flat = best_Fmatrix.reshape((-1))
     val = np.dot(A, F_flat)
     val = np.abs(val)
-    ind = np.argsort(val)
-    inliers_a = matches1[ind[:29]]
-    inliers_b = matches2[ind[:29]]
-
+    ind = np.argsort(val)[:29]
+    inliers_a = matches1[ind]
+    inliers_b = matches2[ind]
     return best_Fmatrix, inliers_a, inliers_b
 
 
