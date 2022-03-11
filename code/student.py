@@ -200,14 +200,17 @@ def ransac_fundamental_matrix(matches1, matches2, num_iters):
 
     A = x1*x2
     max = 0
-    sample = 8
+    sample = 9
 
     for i in range(num_iters):
         match_id = np.random.randint(np.shape(matches1)[0],size=sample)
-        F_temp = estimate_fundamental_matrix(matches1[match_id, :], matches2[match_id, :])
-        dist = np.dot(A, F_temp.reshape((-1)))
+        points1 = matches1[match_id, :]
+        points2 = matches2[match_id, :]
+        F_temp = estimate_fundamental_matrix(points1, points2)
+        F_temp_flat = F_temp.reshape((-1))
+        dist = np.dot(A, F_temp_flat)
         dist = np.abs(dist)
-        num = np.sum(dist < 0.02)
+        num = np.sum(dist < 0.002)
         if num > max:
             max = num
             best_Fmatrix = F_temp.copy()
